@@ -8,8 +8,9 @@ us_flight_analytics:
       
       
       region_name: ap-southeast-1
-      database: awsdatacatalog
-      schema: us_flight_database
+      database: us_flight_database
+      schema: default
+      work_group: primary
       data_catalog: awsdatacatalog
       threads: 4
       
