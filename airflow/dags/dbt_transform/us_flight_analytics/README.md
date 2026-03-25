@@ -79,17 +79,25 @@ models:
 
 ```yaml
 us_flight_analytics:
-  target: athena_dev
   outputs:
-    athena_dev:
+    dev:
       type: athena
-      method: iam_role  # or access_key_id + secret_access_key
-      role_arn: arn:aws:iam::ACCOUNT_ID:role/dbt-role
+      s3_staging_dir: s3://us-flight-delay-analytics-athena-result/prefix/
+      
+      s3_data_dir: s3://us-flight-delay-analytics-athena-result/business/
+      
+      
+      region_name: ap-southeast-1
       database: us_flight_database
-      s3_output_path: s3://us-flight-analytics-athena-result/
-      s3_output_encryption: false
-      region_name: us-east-1
-      schema: analytics
+      schema: default
+      work_group: primary
+      data_catalog: awsdatacatalog
+      threads: 4
+      
+      aws_access_key_id: "{{ env_var('AWS_ACCESS_KEY_ID') }}"
+      aws_secret_access_key: "{{ env_var('AWS_SECRET_ACCESS_KEY') }}"
+      
+  target: dev
 ```
 
 ---
@@ -102,47 +110,6 @@ us_flight_analytics:
 **Input**: Clean Parquet files from Spark (S3 `clean_flights/`)  
 **Output**: Standardized, renamed columns ready for analysis
 
-#### Models:
-- `stg_flights` - Standardized flight records
-- `stg_airports` - Airport dimension
-- `stg_weather` - Weather facts
-- `stg_airlines` - Airline dimension
-
-#### Example: `stg_flights.sql`
-```sql
-{{ config(
-    materialized='view',
-    description='Standardized flight records from raw data'
-) }}
-
-SELECT
-    -- Surrogate key for analytics
-    CAST(FLIGHT_ID AS STRING) AS flight_key,
-    
-    -- Dimensions
-    CAST(AIRLINE AS STRING) AS airline_code,
-    CAST(DEPARTURE_AIRPORT AS STRING) AS origin_airport_code,
-    CAST(ARRIVAL_AIRPORT AS STRING) AS destination_airport_code,
-    
-    -- Facts
-    CAST(FLIGHT_DISTANCE AS INTEGER) AS flight_distance_miles,
-    CAST(DELAY_MINUTES AS INTEGER) AS departure_delay_minutes,
-    CAST(CANCELLED AS BOOLEAN) AS is_cancelled,
-    
-    -- Dates
-    CAST(DATE(SCHEDULED_DEPARTURE) AS DATE) AS scheduled_departure_date,
-    CAST(DATE(ACTUAL_DEPARTURE) AS DATE) AS actual_departure_date,
-    
-    -- Metadata
-    CURRENT_TIMESTAMP AS dbt_loaded_at,
-    '{{ var("load_id") }}' AS load_id
-
-FROM {{ source('raw_flights', 'flights') }}
-
-WHERE SCHEDULED_DEPARTURE >= '2023-01-01'
-  AND SCHEDULED_DEPARTURE < '2024-01-01'
-```
-
 ---
 
 ### **LAYER 2: INTERMEDIATE**
@@ -151,12 +118,6 @@ WHERE SCHEDULED_DEPARTURE >= '2023-01-01'
 **Input**: Staging models  
 **Output**: Enriched datasets with business logic
 
-#### Models:
-- `int_flights_enhanced` - Flights with geographic + weather context
-- `int_airline_daily_summary` - Aggregated daily stats per airline
-- `int_route_performance` - Route-level metrics
-- `int_delay_patterns` - Temporal patterns (hour, dow, month)
-
 ---
 
 ### **LAYER 3: BUSINESS**
@@ -164,14 +125,6 @@ WHERE SCHEDULED_DEPARTURE >= '2023-01-01'
 **Materialization**: TABLE (Parquet, Snappy compressed)  
 **Input**: Intermediate models  
 **Output**: Ready for BI dashboards
-
-#### Core Models:
-
-1. **`fct_flights`** - Flight Facts Table
-2. **`dim_airline`** - Airline Dimension
-3. **`dim_airport`** - Airport Dimension
-4. **`fct_airline_daily_performance`** - Airline Daily Stats
-5. **`fct_route_analytics`** - Route-Level Analytics
 
 ---
 
@@ -183,22 +136,6 @@ WHERE SCHEDULED_DEPARTURE >= '2023-01-01'
 - **Not-Null Tests**: Validate required columns are populated
 - **Referential Integrity**: Check foreign key relationships
 - **Custom SQL Tests**: Domain-specific validation logic
-
-### Running Tests
-
-```bash
-# All tests
-dbt test
-
-# Tests for specific model
-dbt test --select fct_flights
-
-# Run with debug output
-dbt test --debug
-
-# Run tests and fail on warnings
-dbt test --warn-error
-```
 
 ---
 
@@ -221,8 +158,6 @@ dbt run
 # Run specific model
 dbt run --select stg_flights
 
-# Run model and its downstream dependencies
-dbt run --select +fct_flights+
 ```
 
 ### Testing & Quality
