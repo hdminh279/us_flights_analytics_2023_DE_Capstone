@@ -1,0 +1,164 @@
+##########################################
+# Python & Virtual Environments
+##########################################
+__pycache__/
+*.py[oc]
+*.egg-info/
+.Python
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+pip-wheel-metadata/
+share/python-wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+MANIFEST
+
+# Virtual environments
+.venv/
+venv/
+ENV/
+env/
+.env/
+pip-log.txt
+pip-delete-this-directory.txt
+
+##########################################
+# Airflow
+##########################################
+airflow/logs/
+!airflow/logs/.gitkeep
+airflow/plugins/
+!airflow/plugins/.gitkeep
+
+##########################################
+# dbt
+##########################################
+target/
+dbt_packages/
+dbt_project.yml.old
+*.compiled.sql
+
+##########################################
+# Terraform & Infrastructure
+##########################################
+.terraform/
+.terraform.lock.hcl
+terraform.tfstate
+terraform.tfstate.*
+*.tfstate
+*.tfstate.*
+**/*.tfvars
+**/*.tfvars.json
+.terraform.*.backup
+
+# Note: Keep terraform.tfstate.backup for recovery, but requires security review
+
+##########################################
+# Environment & Secrets
+##########################################
+.env
+.env.local
+.env.*.local
+.env*.example
+secrets/
+credentials/
+.aws/
+.aws/credentials
+.aws/config
+
+##########################################
+# IDE & Editors
+##########################################
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+.DS_Store
+Thumbs.db
+*.sublime-project
+*.sublime-workspace
+
+##########################################
+# Jupyter & Notebooks
+##########################################
+.ipynb_checkpoints/
+*.ipynb_checkpoints/
+.jupyter/
+notebook.log
+
+##########################################
+# Data & Databases
+##########################################
+*.db
+*.sqlite
+*.sqlite3
+postgres-db-volume/
+
+##########################################
+# Logs & Temporary Files
+##########################################
+*.log
+logs/
+tmp/
+temp/
+.tmp/
+
+##########################################
+# Docker
+##########################################
+.dockerignore
+docker-compose.override.yml
+
+##########################################
+# OS Files
+##########################################
+.DS_Store
+.DS_Store?
+._*
+.Spotlight-V100
+.Trashes
+ehthumbs.db
+desktop.ini
+Thumbs.db
+
+##########################################
+# Package Manager Lock Files (optional)
+##########################################
+# Uncomment if using Poetry or Pipenv
+# poetry.lock
+# Pipfile.lock
+
+##########################################
+# IDE specific Python files
+##########################################
+.pylintrc
+.mypy_cache/
+.dmypy.json
+dmypy.json
+.pyre/
+.pytype/
+htmlcov/
+.coverage
+.coverage.*
+.cache
+nosetests.xml
+coverage.xml
+*.cover
+.hypothesis/
+
+##########################################
+# Git
+##########################################
+.gitkeep

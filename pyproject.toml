@@ -1,0 +1,14 @@
+[project]
+name = "us_flight_delay"
+version = "0.1.0"
+description = "Add your description here"
+readme = "README.md"
+requires-python = ">=3.11"
+dependencies = [
+    "apache-airflow==2.9.0",
+    "jupyter>=1.1.1",
+    "notebook>=7.5.5",
+    "pandas>=3.0.1",
+    "pyspark==3.5.0",
+    "dbt-athena-community==1.10.0"
+]

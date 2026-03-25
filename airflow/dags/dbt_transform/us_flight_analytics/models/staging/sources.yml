@@ -1,0 +1,11 @@
+version: 2
+
+sources:
+  - name: aws_data_lake
+    database: awsdatacatalog
+    schema: us_flight_database
+    tables:
+      - name: clean_geo
+      - name: clean_flights
+      - name: clean_weather
+      - name: clean_cancelled_diverted
