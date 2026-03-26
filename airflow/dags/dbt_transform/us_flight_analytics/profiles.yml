@@ -7,7 +7,7 @@ us_flight_analytics:
       s3_data_dir: "{{ env_var('S3_BUCKET_FINAL_RESULT') }}"
       region_name: ap-southeast-1
       database: awsdatacatalog
-      schema: us_flight_database
+      schema: "{{ env_var('DATABASE_NAME') }}"
       work_group: primary
       data_catalog: AwsDataCatalog
       threads: 4

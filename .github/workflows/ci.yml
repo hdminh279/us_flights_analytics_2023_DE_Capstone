@@ -37,6 +37,7 @@ jobs:
         env:
           S3_ATHENA_RESULT: "dir_athena"
           S3_BUCKET_FINAL_RESULT: "dir_athena"
+          DATABASE_NAME: "db_name"
           AWS_ACCESS_KEY_ID: "dummy_access_key_for_ci_test"
           AWS_SECRET_ACCESS_KEY: "dummy_secret_key_for_ci_test"
         run: |

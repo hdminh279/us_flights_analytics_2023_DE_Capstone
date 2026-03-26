@@ -315,11 +315,13 @@ pip install -e .  # Installs from pyproject.toml
 TARGET_S3_BUCKET=your_bucket_S3 (...-data-lake) (no s3://)
 S3_ATHENA_RESULT=your_dir (suggest: s3://...-athena-result/prefix)
 S3_BUCKET_FINAL_RESULT=your_dir (suggest: s3://...-data-lake/business)
+DATABASE_NAME=(your glue name in main.tf)
 
 Example:
 TARGET_S3_BUCKET=us-flight-delay-analytics-data-lake
 S3_ATHENA_RESULT=s3://us-flight-delay-analytics-athena-result/prefix/
 S3_BUCKET_FINAL_RESULT=s3://us-flight-delay-analytics-data-lake/business/
+
 ```
 
 ```bash
