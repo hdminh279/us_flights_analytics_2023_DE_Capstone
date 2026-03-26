@@ -318,9 +318,14 @@ pip install -e .  # Installs from pyproject.toml
 
 - Add to .env
 ```
-TARGET_S3_BUCKET=your_bucket_S3 (...-data-lake)
-S3_ATHENA_RESULT=your_dir (...-athena-result)
-S3_BUCKET_FINAL_RESULT=your_dir (suggest: ...-data-lake/business)
+TARGET_S3_BUCKET=your_bucket_S3 (...-data-lake) (no s3://)
+S3_ATHENA_RESULT=your_dir (suggest: s3://...-athena-result/prefix)
+S3_BUCKET_FINAL_RESULT=your_dir (suggest: s3://...-data-lake/business)
+
+Example:
+TARGET_S3_BUCKET=us-flight-delay-analytics-data-lake
+S3_ATHENA_RESULT=s3://us-flight-delay-analytics-athena-result/prefix/
+S3_BUCKET_FINAL_RESULT=s3://us-flight-delay-analytics-data-lake/business/
 ```
 
 ```bash
@@ -420,7 +425,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_geo (
   longitude DOUBLE
 )
 STORED AS PARQUET
-LOCATION 's3://us-flight-delay-analytics-data-lake/clean/geo/';
+LOCATION 's3://.../clean/geo/';
 
 -- Create clean_cancelled_diverted table
 CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_cancelled_diverted (
@@ -449,7 +454,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_cancelled_diverted 
   delay_lastaircraft INT
 )
 STORED AS PARQUET
-LOCATION 's3://us-flight-delay-analytics-data-lake/clean/cancelled_diverted/';
+LOCATION 's3://.../clean/cancelled_diverted/';
 
 -- Create clean_weather table
 CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_weather (
@@ -465,7 +470,7 @@ CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_weather (
   airport_id STRING
 )
 STORED AS PARQUET
-LOCATION 's3://us-flight-delay-analytics-data-lake/clean/weather/';
+LOCATION 's3://.../clean/weather/';
 ```
 
 ### Triggering the Pipeline
