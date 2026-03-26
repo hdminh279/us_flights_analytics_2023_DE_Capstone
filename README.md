@@ -86,6 +86,7 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
 
 ---
 
+
 ## 🛠️ Tech Stack
 
 | Component | Technology | Purpose |
@@ -100,6 +101,38 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
 | **Visualization** | Metabase | Interactive BI dashboard |
 | **Database** | PostgreSQL 13 | Airflow metadata store |
 | **Containerization** | Docker + Docker Compose | Reproducible environment |
+
+---
+
+## 📁 Project Structure
+
+```
+us_flight_delay_analytics/
+├── airflow/                          # Airflow DAGs and jobs
+│   ├── dags/
+│   │   ├── flight_delay_pipeline.py  # Main orchestration DAG
+│   │   ├── spark_jobs/
+│   │   │   └── spark_preprocessing.py # Spark data cleaning job
+│   │   └── dbt_transform/            # dbt project folder
+│   │       └── us_flight_analytics/  # dbt models and configs
+│   ├── logs/                         # DAG execution logs (auto-generated)
+│   └── plugins/                      # Airflow custom operators
+├── spark_jobs/                        # Spark job scripts
+│   └── spark_preprocessing.ipynb      # Development/testing notebook
+├── infra/                             # Terraform infrastructure code
+│   ├── main.tf                       # AWS resources configuration
+│   ├── variables.tf                  # Input variables
+│   └── terraform.tfstate             # Infrastructure state
+├── docs/                              # Documentation and links
+│   └── RESOURCES.md                  # Reference materials
+├── metabase-data/                     # Metabase database files
+├── .env                              # ⚠️ Create this file
+├── .gitignore                        # Git ignore configuration
+├── Dockerfile                        # Airflow container image
+├── docker-compose.yml                # Multi-container orchestration
+├── pyproject.toml                    # Python dependencies
+└── README.md                         # This file
+```
 
 ---
 
@@ -197,6 +230,8 @@ The project includes a comprehensive Metabase dashboard with 4 key analytics til
 - Python 3.11+
 - **uv** - Fast Python package manager ([install here](https://astral.sh/uv/))
 - Docker & Docker Compose
+- Terraform
+- dbt
 - AWS Account with S3, Athena, and Glue access
 - Kaggle API credentials
 - Git
@@ -206,7 +241,7 @@ The project includes a comprehensive Metabase dashboard with 4 key analytics til
 #### Step 1: Clone the Repository
 ```bash
 git clone https://github.com/hdminh279/us_flights_analytics_2023_DE_Capstone.git
-cd us_flight_delay_analytics
+cd us_flights_analytics_2023_DE_Capstone
 ```
 
 #### Step 2: Create Required Directories
@@ -237,9 +272,6 @@ AWS_DEFAULT_REGION=us-east-1
 KAGGLE_USERNAME=your_kaggle_username
 KAGGLE_KEY=your_kaggle_api_key
 
-# S3 Configuration
-TARGET_S3_BUCKET=us-flight-analytics-data-lake-xxxxxx
-
 # Airflow Configuration
 AIRFLOW_UID=50000
 ```
@@ -253,7 +285,10 @@ This project uses **uv** for fast, reliable dependency management. If you don't 
 uv sync
 
 # Activate virtual environment
+# Ubuntu
 source .venv/bin/activate
+# Windows
+.\.venv\Scripts\activate
 
 # Verify Python version
 python --version  # Should show 3.11.x
@@ -269,14 +304,29 @@ python --version  # Should show 3.11.x
 ```bash
 # If you prefer traditional venv + pip:
 python3.11 -m venv .venv
+# Ubuntu
 source .venv/bin/activate
+# Windows
+.\.venv\Scripts\activate
 pip install -e .  # Installs from pyproject.toml
 ```
 
 #### Step 5: Initialize Terraform Infrastructure
 
+- Set up your project name, glue name,... in variables.tf and main.tf
+- Go to aws web -> AWS Lake Formation -> Administrative roles and tasks -> Data lake administrators: Add your IAM Users.
+
+- Add to .env
+```
+TARGET_S3_BUCKET=your_bucket_S3 (...-data-lake)
+S3_ATHENA_RESULT=your_dir (...-athena-result)
+S3_BUCKET_FINAL_RESULT=your_dir (suggest: ...-data-lake/business)
+```
+
 ```bash
 cd infra
+
+# Note: Save `.env` with AWS credentials before running terraform apply
 
 # Initialize Terraform
 terraform init
@@ -287,20 +337,18 @@ terraform plan
 # Apply infrastructure (creates AWS resources)
 terraform apply
 
-# Note: Save `.env` with AWS credentials before running terraform apply
 cd ..
 ```
 
-For detailed Terraform setup, see [infra/README.md](infra/README.md).
 
 #### Step 6: Build and Start Docker Containers
 
 ```bash
 # Start all services (Airflow, PostgreSQL, Metabase)
-docker-compose up -d --build
+docker compose up -d --build
 
 # Check service status
-docker-compose ps
+docker compose ps
 ```
 
 **Expected output:**
@@ -324,43 +372,11 @@ airflow-scheduler       airflow scheduler        airflow-scheduler   Up 5 second
 
 ---
 
-## 📁 Project Structure
-
-```
-us_flight_delay_analytics/
-├── airflow/                          # Airflow DAGs and jobs
-│   ├── dags/
-│   │   ├── flight_delay_pipeline.py  # Main orchestration DAG
-│   │   ├── spark_jobs/
-│   │   │   └── spark_preprocessing.py # Spark data cleaning job
-│   │   └── dbt_transform/            # dbt project folder
-│   │       └── us_flight_analytics/  # dbt models and configs
-│   ├── logs/                         # DAG execution logs (auto-generated)
-│   └── plugins/                      # Airflow custom operators
-├── spark_jobs/                        # Spark job scripts
-│   └── spark_preprocessing.ipynb      # Development/testing notebook
-├── infra/                             # Terraform infrastructure code
-│   ├── main.tf                       # AWS resources configuration
-│   ├── variables.tf                  # Input variables
-│   └── terraform.tfstate             # Infrastructure state
-├── docs/                              # Documentation and links
-│   └── RESOURCES.md                  # Reference materials
-├── metabase-data/                     # Metabase database files
-├── .env                              # ⚠️ Create this file
-├── .gitignore                        # Git ignore configuration
-├── Dockerfile                        # Airflow container image
-├── docker-compose.yml                # Multi-container orchestration
-├── pyproject.toml                    # Python dependencies
-└── README.md                         # This file
-```
-
----
-
 ## 🔄 Pipeline Execution
 
 ### Action Required
 
-- Create table in Athena
+- AWS web: Find athena, edit query result location and then create tabels
 
 ```sql
 -- Create clean_flights table

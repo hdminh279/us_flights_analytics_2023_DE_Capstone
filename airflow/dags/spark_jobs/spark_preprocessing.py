@@ -2,6 +2,7 @@ from pyspark.sql import SparkSession
 from pyspark.sql import types
 import os
 
+S3_BUCKET = os.getenv("TARGET_S3_BUCKET")
 
 spark = SparkSession.builder \
     .appName("S3Integration") \
@@ -28,9 +29,9 @@ airport_geo_schema = types.StructType([
 df_airport_geo_clean = spark.read \
     .option("header", "true") \
     .schema(airport_geo_schema) \
-    .csv("s3a://us-flight-delay-analytics-data-lake/raw_flights/airports_geolocation.csv")
+    .csv(f"s3a://{S3_BUCKET}/raw_flights/airports_geolocation.csv")
 
-df_airport_geo_clean.write.parquet("s3a://us-flight-delay-analytics-data-lake/clean/geo",mode="overwrite")
+df_airport_geo_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/geo",mode="overwrite")
 
 
 flights_schema = types.StructType([
@@ -63,16 +64,16 @@ flights_schema = types.StructType([
 df_flights_clean = spark.read \
     .option("header", "true") \
     .schema(flights_schema) \
-    .csv("s3a://us-flight-delay-analytics-data-lake/raw_flights/US_flights_2023.csv")
+    .csv(f"s3a://{S3_BUCKET}/raw_flights/US_flights_2023.csv")
 
 df_flights_24_clean = spark.read \
     .option("header", "true") \
     .schema(flights_schema) \
-    .csv("s3a://us-flight-delay-analytics-data-lake/raw_flights/maj us flight - january 2024.csv")
+    .csv(f"s3a://{S3_BUCKET}/raw_flights/maj us flight - january 2024.csv")
 
 df_flights_final_clean = df_flights_clean.unionByName(df_flights_24_clean)
 
-df_flights_final_clean.write.parquet("s3a://us-flight-delay-analytics-data-lake/clean/flights", mode="overwrite")
+df_flights_final_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/flights", mode="overwrite")
 
 
 can_div_schema = types.StructType([
@@ -104,9 +105,9 @@ can_div_schema = types.StructType([
 df_can_div_clean = spark.read \
     .option("header", "true") \
     .schema(can_div_schema) \
-    .csv("s3a://us-flight-delay-analytics-data-lake/raw_flights/Cancelled_Diverted_2023.csv")
+    .csv(f"s3a://{S3_BUCKET}/raw_flights/Cancelled_Diverted_2023.csv")
 
-df_can_div_clean.write.parquet("s3a://us-flight-delay-analytics-data-lake/clean/cancelled_diverted", mode="overwrite")
+df_can_div_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/cancelled_diverted", mode="overwrite")
 
 
 weather_schema = types.StructType([
@@ -125,8 +126,8 @@ weather_schema = types.StructType([
 df_weather_clean = spark.read \
     .option("header", "true") \
     .schema(weather_schema) \
-    .csv("s3a://us-flight-delay-analytics-data-lake/raw_flights/weather_meteo_by_airport.csv")
+    .csv(f"s3a://{S3_BUCKET}/raw_flights/weather_meteo_by_airport.csv")
 
-df_weather_clean.write.parquet("s3a://us-flight-delay-analytics-data-lake/clean/weather", mode="overwrite")
+df_weather_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/weather", mode="overwrite")
 
 spark.stop()

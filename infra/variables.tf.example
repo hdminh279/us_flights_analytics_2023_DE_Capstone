@@ -17,5 +17,5 @@ variable "aws_secret_key" {
 variable "project_name" {
   description = "AWS Project Name"
   type        = string
-  default     = "us-flight-delay-analytics"
+  default     = "your_project_name"
 }
