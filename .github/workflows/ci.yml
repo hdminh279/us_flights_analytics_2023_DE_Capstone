@@ -34,6 +34,9 @@ jobs:
 
       - name: Check dbt syntax
         working-directory: ./airflow/dags/dbt_transform/us_flight_analytics
+        env:
+          AWS_ACCESS_KEY_ID: "dummy_access_key_for_ci_test"
+          AWS_SECRET_ACCESS_KEY: "dummy_secret_key_for_ci_test"
         run: |
           source ../../../../.venv/bin/activate
           dbt deps
