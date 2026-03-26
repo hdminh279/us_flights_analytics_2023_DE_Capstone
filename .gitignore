@@ -61,8 +61,8 @@ terraform.tfstate.*
 **/*.tfvars
 **/*.tfvars.json
 .terraform.*.backup
-main.tf
-variables.tf
+infra/main.tf
+infra/variables.tf
 
 # Note: Keep terraform.tfstate.backup for recovery, but requires security review
 
