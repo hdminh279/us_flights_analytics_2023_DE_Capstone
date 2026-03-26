@@ -35,6 +35,8 @@ jobs:
       - name: Check dbt syntax
         working-directory: ./airflow/dags/dbt_transform/us_flight_analytics
         env:
+          S3_ATHENA_RESULT: "dir_athena"
+          S3_BUCKET_FINAL_RESULT: "dir_athena"
           AWS_ACCESS_KEY_ID: "dummy_access_key_for_ci_test"
           AWS_SECRET_ACCESS_KEY: "dummy_secret_key_for_ci_test"
         run: |

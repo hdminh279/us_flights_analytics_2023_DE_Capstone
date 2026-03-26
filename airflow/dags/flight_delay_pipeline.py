@@ -73,9 +73,14 @@ with DAG(
         bash_command=f"cd {DBT_PROJECT_DIR} && dbt run"
     )
 
+    dbt_create_tables = BashOperator(
+        task_id="dbt_create_external_tables",
+        bash_command=f"cd {DBT_PROJECT_DIR} && dbt run-operation create_external_tables"
+    )
+
     dbt_test = BashOperator(
         task_id="dbt_test_models",
         bash_command=f"cd {DBT_PROJECT_DIR} && dbt test"
     )
 
-    create_tmp >> download_data >> upload_s3 >> cleanup >> spark_clean_data >> dbt_deps >> dbt_run >> dbt_test
+    create_tmp >> download_data >> upload_s3 >> cleanup >> spark_clean_data >> dbt_deps >> dbt_create_tables >> dbt_run >> dbt_test
