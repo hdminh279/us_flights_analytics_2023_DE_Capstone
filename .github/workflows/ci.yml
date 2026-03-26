@@ -22,7 +22,7 @@ jobs:
         run: uv sync
 
       - name: Test Docker Compose Build
-        run: docker-compose build
+        run: docker compose build
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
