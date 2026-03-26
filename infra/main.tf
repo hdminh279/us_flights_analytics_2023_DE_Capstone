@@ -19,12 +19,13 @@ resource "aws_s3_bucket" "data_lake" {
   force_destroy = true
 }
 
-# Add one bucket athena to save results from athena
+# Add bucket athena to save results from athena
 resource "aws_s3_bucket" "athena_results" {
   bucket        = "${var.project_name}-athena-result"
   force_destroy = true
 }
 
+# Create Glue
 resource "aws_glue_catalog_database" "data_warehouse" {
   name = "us_flight_database"
 }

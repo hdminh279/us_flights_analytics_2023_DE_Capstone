@@ -41,3 +41,4 @@ models:
       +materialized: table
       +format: parquet
       +write_compression: snappy
+      +partitioned_by: ['year', 'month']

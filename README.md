@@ -129,97 +129,7 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
 - **Tool**: AWS Athena SQL
 - **Action Required**: Execute the following DDL statements in AWS Athena to create external tables pointing to the S3 clean layer:
 
-```sql
--- Create clean_flights table
-CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_flights (
-  flightdate TIMESTAMP,
-  day_of_week INT,
-  airline STRING,
-  tail_number STRING,
-  dep_airport STRING,
-  dep_cityname STRING,
-  deptime_label STRING,
-  dep_delay INT,
-  dep_delay_tag INT,
-  dep_delay_type STRING,
-  arr_airport STRING,
-  arr_cityname STRING,
-  arr_delay INT,
-  arr_delay_type STRING,
-  flight_duration INT,
-  distance_type STRING,
-  delay_carrier INT,
-  delay_weather INT,
-  delay_nas INT,
-  delay_security INT,
-  delay_lastaircraft INT,
-  manufacturer STRING,
-  model STRING,
-  aircraft_age INT
-)
-STORED AS PARQUET
-LOCATION 's3://us-flight-delay-analytics-data-lake/clean/flights/';
-
--- Create clean_geo table
-CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_geo (
-  iata_code STRING,
-  airport STRING,
-  city STRING,
-  state STRING,
-  country STRING,
-  latitude DOUBLE,
-  longitude DOUBLE
-)
-STORED AS PARQUET
-LOCATION 's3://us-flight-delay-analytics-data-lake/clean/geo/';
-
--- Create clean_cancelled_diverted table
-CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_cancelled_diverted (
-  flightdate TIMESTAMP,
-  day_of_week INT,
-  airline STRING,
-  tail_number STRING,
-  cancelled INT,
-  diverted INT,
-  dep_airport STRING,
-  dep_cityname STRING,
-  deptime_label STRING,
-  dep_delay INT,
-  dep_delay_tag INT,
-  dep_delay_type STRING,
-  arr_airport STRING,
-  arr_cityname STRING,
-  arr_delay INT,
-  arr_delay_type STRING,
-  flight_duration INT,
-  distance_type STRING,
-  delay_carrier INT,
-  delay_weather INT,
-  delay_nas INT,
-  delay_security INT,
-  delay_lastaircraft INT
-)
-STORED AS PARQUET
-LOCATION 's3://us-flight-delay-analytics-data-lake/clean/cancelled_diverted/';
-
--- Create clean_weather table
-CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_weather (
-  time TIMESTAMP,
-  tavg FLOAT,
-  tmin FLOAT,
-  tmax FLOAT,
-  prcp FLOAT,
-  snow FLOAT,
-  wdir FLOAT,
-  wspd FLOAT,
-  pres FLOAT,
-  airport_id STRING
-)
-STORED AS PARQUET
-LOCATION 's3://us-flight-delay-analytics-data-lake/clean/weather/';
-```
-
-**⚠️ Important**: These tables must be created in Athena BEFORE running dbt models in Stage 3. dbt will reference these external tables to build business-layer models.
+**⚠️ Important**: Tables must be created in Athena BEFORE running dbt models in Stage 3. dbt will reference these external tables to build business-layer models.
 
 ### Stage 3: Data Transformation
 - **Tool**: dbt (data build tool)
@@ -228,7 +138,9 @@ LOCATION 's3://us-flight-delay-analytics-data-lake/clean/weather/';
   - Build intermediate models (feature engineering)
   - Build business models (aggregated facts and dimensions)
   - Run automated tests and data quality checks
+- **Partition**: Data is segmented by year and month to optimize queries on AWS Athena. This reduces the amount of data scanned (data scraped) when the console filters by time, thereby speeding up queries and saving AWS costs.
 - **Destination**: AWS S3 Business Bucket + Athena Tables
+
 
 ### Stage 4: Visualization
 - **Tool**: Metabase
@@ -445,6 +357,100 @@ us_flight_delay_analytics/
 ---
 
 ## 🔄 Pipeline Execution
+
+### Action Required
+
+- Create table in Athena
+
+```sql
+-- Create clean_flights table
+CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_flights (
+  flightdate TIMESTAMP,
+  day_of_week INT,
+  airline STRING,
+  tail_number STRING,
+  dep_airport STRING,
+  dep_cityname STRING,
+  deptime_label STRING,
+  dep_delay INT,
+  dep_delay_tag INT,
+  dep_delay_type STRING,
+  arr_airport STRING,
+  arr_cityname STRING,
+  arr_delay INT,
+  arr_delay_type STRING,
+  flight_duration INT,
+  distance_type STRING,
+  delay_carrier INT,
+  delay_weather INT,
+  delay_nas INT,
+  delay_security INT,
+  delay_lastaircraft INT,
+  manufacturer STRING,
+  model STRING,
+  aircraft_age INT
+)
+STORED AS PARQUET
+LOCATION 's3://us-flight-delay-analytics-data-lake/clean/flights/';
+
+-- Create clean_geo table
+CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_geo (
+  iata_code STRING,
+  airport STRING,
+  city STRING,
+  state STRING,
+  country STRING,
+  latitude DOUBLE,
+  longitude DOUBLE
+)
+STORED AS PARQUET
+LOCATION 's3://us-flight-delay-analytics-data-lake/clean/geo/';
+
+-- Create clean_cancelled_diverted table
+CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_cancelled_diverted (
+  flightdate TIMESTAMP,
+  day_of_week INT,
+  airline STRING,
+  tail_number STRING,
+  cancelled INT,
+  diverted INT,
+  dep_airport STRING,
+  dep_cityname STRING,
+  deptime_label STRING,
+  dep_delay INT,
+  dep_delay_tag INT,
+  dep_delay_type STRING,
+  arr_airport STRING,
+  arr_cityname STRING,
+  arr_delay INT,
+  arr_delay_type STRING,
+  flight_duration INT,
+  distance_type STRING,
+  delay_carrier INT,
+  delay_weather INT,
+  delay_nas INT,
+  delay_security INT,
+  delay_lastaircraft INT
+)
+STORED AS PARQUET
+LOCATION 's3://us-flight-delay-analytics-data-lake/clean/cancelled_diverted/';
+
+-- Create clean_weather table
+CREATE EXTERNAL TABLE IF NOT EXISTS us_flight_database.clean_weather (
+  time TIMESTAMP,
+  tavg FLOAT,
+  tmin FLOAT,
+  tmax FLOAT,
+  prcp FLOAT,
+  snow FLOAT,
+  wdir FLOAT,
+  wspd FLOAT,
+  pres FLOAT,
+  airport_id STRING
+)
+STORED AS PARQUET
+LOCATION 's3://us-flight-delay-analytics-data-lake/clean/weather/';
+```
 
 ### Triggering the Pipeline
 
