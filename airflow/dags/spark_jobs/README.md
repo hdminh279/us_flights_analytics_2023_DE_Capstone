@@ -38,7 +38,6 @@ jupyter nbconvert --to script spark_preprocessing.ipynb
 
 - [Apache Spark Documentation](https://spark.apache.org/docs/latest/)
 - [PySpark API](https://spark.apache.org/docs/latest/api/python/)
-- [Parquet Format](https://parquet.apache.org/)
 - [AWS S3 with Spark](https://docs.aws.amazon.com/emr/latest/ReleaseGuide/emr-spark-configure.html)
 
 ---
@@ -48,4 +47,3 @@ jupyter nbconvert --to script spark_preprocessing.ipynb
 - [Main README](../README.md) - Project overview
 - [Airflow DAGs](../airflow/README.md) - Pipeline orchestration
 - [dbt Models](../airflow/dags/dbt_transform/us_flight_analytics/README.md) - Transformation
-- [Infrastructure](../infra/README.md) - AWS setup

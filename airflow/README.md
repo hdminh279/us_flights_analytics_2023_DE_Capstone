@@ -53,6 +53,11 @@ Executor: LocalExecutor (Docker)
            │
            ▼
 ┌──────────────────────────┐
+│ dbt_create_tables        │
+└──────────┬───────────────┘
+           │
+           ▼
+┌──────────────────────────┐
 │ dbt_run_models           │
 └──────────┬───────────────┘
            │
@@ -132,7 +137,14 @@ See [../spark_jobs/README.md](../spark_jobs/README.md) for detailed Spark job do
 - **Location**: `dbt_transform/us_flight_analytics/`
 - **Output**: Downloads packages to `dbt_packages/` directory
 
-#### Task 7: `dbt_run_models`
+#### Task 7: `dbt_create_tables`
+- **Type**: BashOperator
+- **Purpose**: Create tables in Athena to get data from S3
+- **Command**: `dbt run-operation create_external_tables`
+- **Location**: `dbt_transform/us_flight_analytics/macros`
+- **Output**: Creates tables/views in AWS Athena + S3
+
+#### Task 8: `dbt_run_models`
 - **Type**: BashOperator
 - **Purpose**: Build all dbt models (staging → intermediate → business)
 - **Command**: `dbt run`
@@ -140,7 +152,8 @@ See [../spark_jobs/README.md](../spark_jobs/README.md) for detailed Spark job do
 - **Execution**: Sequential (respects dependencies)
 - **Output**: Creates tables/views in AWS Athena + S3
 
-#### Task 8: `dbt_test_models`
+
+#### Task 9: `dbt_test_models`
 - **Type**: BashOperator
 - **Purpose**: Run automated dbt tests and data quality checks
 - **Command**: `dbt test`
@@ -149,32 +162,8 @@ See [../spark_jobs/README.md](../spark_jobs/README.md) for detailed Spark job do
   - Custom SQL tests (data validation logic)
 - **Failure Handling**: Pipeline fails if any test fails
 
-See [dbt_transform/us_flight_analytics/README.md](dbt_transform/us_flight_analytics/README.md) for detailed transformation documentation.
-
 ---
 
-## 🔧 Environment Variables
-
-All configuration is managed through `.env` file:
-
-```bash
-# Kaggle Dataset Credentials
-KAGGLE_USERNAME=your_kaggle_username
-KAGGLE_KEY=your_kaggle_api_key
-
-# AWS Credentials
-AWS_ACCESS_KEY_ID=your_aws_access_key
-AWS_SECRET_ACCESS_KEY=your_aws_secret_key
-AWS_DEFAULT_REGION=us-east-1
-
-# S3 bucket names
-TARGET_S3_BUCKET=us-flight-analytics-data-lake-xxxxxx
-
-# Airflow
-AIRFLOW_UID=50000
-```
-
----
 
 ## 🚀 Running the Pipeline
 
@@ -212,18 +201,8 @@ spark.executor.memory=2g
 
 ---
 
-## 📚 Additional Resources
-
-- [Airflow Documentation](https://airflow.apache.org/)
-- [Airflow Best Practices](https://airflow.apache.org/docs/apache-airflow/stable/best-practices.html)
-- [Docker Compose Setup](https://airflow.apache.org/docs/docker-compose/stable/index.html)
-- [AWS SDK for Airflow](https://airflow.apache.org/docs/apache-airflow-providers-amazon/stable/index.html)
-
----
-
 ## 🔗 Related Documentation
 
 - [Main README](../README.md) - Project overview
 - [Spark Jobs](../spark_jobs/README.md) - Data processing details
 - [dbt Models](dbt_transform/us_flight_analytics/README.md) - Transformation logic
-- [Infrastructure](../infra/README.md) - AWS setup

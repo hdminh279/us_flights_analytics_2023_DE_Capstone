@@ -74,32 +74,6 @@ models:
       +format: parquet
       +write_compression: snappy
 ```
-
-### `profiles.yml` - Database Connection
-
-```yaml
-us_flight_analytics:
-  outputs:
-    dev:
-      type: athena
-      s3_staging_dir: s3://us-flight-delay-analytics-athena-result/prefix/
-      
-      s3_data_dir: s3://us-flight-delay-analytics-athena-result/business/
-      
-      
-      region_name: ap-southeast-1
-      database: us_flight_database
-      schema: default
-      work_group: primary
-      data_catalog: awsdatacatalog
-      threads: 4
-      
-      aws_access_key_id: "{{ env_var('AWS_ACCESS_KEY_ID') }}"
-      aws_secret_access_key: "{{ env_var('AWS_SECRET_ACCESS_KEY') }}"
-      
-  target: dev
-```
-
 ---
 
 ## 🔄 Three-Layer Transformation Architecture
@@ -255,4 +229,3 @@ dbt test --select test_name --debug
 - [Main README](../../../../README.md) - Project overview
 - [Airflow DAGs](../../../README.md) - Pipeline orchestration
 - [Spark Processing](../../../../spark_jobs/README.md) - Data ingestion
-- [Infrastructure](../../../../infra/README.md) - AWS setup
