@@ -204,5 +204,4 @@ spark.executor.memory=2g
 ## 🔗 Related Documentation
 
 - [Main README](../README.md) - Project overview
-- [Spark Jobs](../spark_jobs/README.md) - Data processing details
 - [dbt Models](dbt_transform/us_flight_analytics/README.md) - Transformation logic

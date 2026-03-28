@@ -403,8 +403,9 @@ docker-compose exec airflow-webserver airflow dags trigger flight_delay_pipeline
 4. `cleanup_tmp` - Clean up temporary files
 5. `spark_preprocessing_job` - Process data with Spark
 6. `dbt_install_packages` - Install dbt dependencies
-7. `dbt_run_models` - Build dbt models
-8. `dbt_test_models` - Run dbt tests
+7. `dbt_create_tables` - Create tables in Athena
+8. `dbt_run_models` - Build dbt models
+9. `dbt_test_models` - Run dbt tests
 
 ---
 
@@ -439,16 +440,6 @@ See [airflow/dags/dbt_transform/us_flight_analytics/README.md](airflow/dags/dbt_
 
 ### AWS Terraform
 See [infra/README.md](infra/README.md) for infrastructure details
-
----
-
-## 📚 Documentation
-
-- [Airflow Pipeline Documentation](airflow/README.md)
-- [Spark Processing Guide](spark_jobs/README.md)
-- [dbt Transformation Models](airflow/dags/dbt_transform/us_flight_analytics/README.md)
-- [Infrastructure Setup](infra/README.md)
-- [External Resources & References](docs/RESOURCES.md)
 
 ---
 
@@ -554,21 +545,3 @@ See [pyproject.toml](pyproject.toml) for complete list:
 - dbt-athena-community==1.10.0
 - pandas>=3.0.1
 - awscli
-
----
-
-## 🤝 Contributing
-
-This is a course project for DataTalks.Club Data Engineering Zoomcamp. For improvements or issues, please open an issue in the repository.
-
----
-
-## 📄 License
-
-This project is created for educational and portfolio purposes.
-
----
-
-## 🔗 Resources & References
-
-See [docs/RESOURCES.md](docs/RESOURCES.md) for comprehensive list of external resources, documentation links, and tutorials used in this project.
