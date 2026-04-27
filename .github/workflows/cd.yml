@@ -29,6 +29,12 @@ jobs:
           terraform init 
           terraform apply -auto-approve
 
+      - name: Debug AWS credentials
+        run: |
+          echo "AWS_ACCESS_KEY_ID=$AWS_ACCESS_KEY_ID"
+          echo "AWS_SECRET_ACCESS_KEY=${#AWS_SECRET_ACCESS_KEY}"
+          echo "AWS_DEFAULT_REGION=$AWS_DEFAULT_REGION"
+
       - name: Sync Airflow Dags to S3 Production
         run: |
           aws s3 sync .airflow/dags s3://$TARGET_S3_BUCKET/dags/ --delete
