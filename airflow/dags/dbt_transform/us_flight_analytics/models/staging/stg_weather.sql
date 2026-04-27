@@ -1,8 +1,8 @@
 WITH raw_weather AS (
-    SELECT * FROM {{ source('aws_data_lake', 'clean_weather')}}
+    SELECT * FROM {{ source('aws_data_lake', 'clean_weather') }}
 )
 
-SELECT 
+SELECT
     airport_id AS airport_code,
     time AS weather_timestamp,
     tavg AS avg_temp_c,
@@ -13,5 +13,5 @@ SELECT
 FROM raw_weather
 WHERE
     airport_id IS NOT NULL
-AND
+    AND
     time IS NOT NULL;

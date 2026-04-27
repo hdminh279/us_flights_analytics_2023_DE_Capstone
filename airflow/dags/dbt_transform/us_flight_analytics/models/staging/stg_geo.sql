@@ -2,7 +2,7 @@ WITH raw_geo AS (
     SELECT * FROM {{ source('aws_data_lake', 'clean_geo') }}
 )
 
-SELECT 
+SELECT
     iata_code AS airport_code,
     airport AS airport_name,
     city,

@@ -7,16 +7,17 @@ weather AS (
 ),
 
 joined_cancelled_weather AS (
-    SELECT 
+    SELECT
         c.*,
         w.avg_temp_c,
         w.precipitation_mm,
         w.snow_mm,
         w.wind_speed_kmh
-    FROM cancelled c
-    LEFT JOIN weather w
-        ON c.dep_airport = w.airport_code
-        AND DATE(c.flight_date) = DATE(w.weather_timestamp)
+    FROM cancelled AS c
+    LEFT JOIN weather AS w
+        ON
+            c.dep_airport = w.airport_code
+            AND DATE(c.flight_date) = DATE(w.weather_timestamp)
 )
 
 SELECT * FROM joined_cancelled_weather

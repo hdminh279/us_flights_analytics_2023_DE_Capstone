@@ -1,5 +1,5 @@
 WITH raw_cancelled AS (
-    SELECT * FROM {{ source('aws_data_lake', 'clean_cancelled_diverted')}}
+    SELECT * FROM {{ source('aws_data_lake', 'clean_cancelled_diverted') }}
 )
 
 SELECT
@@ -10,7 +10,7 @@ SELECT
 
     cancelled,
     diverted,
-    
+
     dep_airport,
     dep_cityname,
     deptime_label,
@@ -23,5 +23,5 @@ SELECT
 FROM raw_cancelled
 WHERE
     flightdate IS NOT NULL
-AND
+    AND
     tail_number IS NOT NULL

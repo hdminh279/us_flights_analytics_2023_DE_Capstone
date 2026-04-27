@@ -16,12 +16,12 @@ joined_flights_weather AS (
         w.wind_speed_kmh
 
     FROM
-        flights f
+        flights AS f
     LEFT JOIN
-        weather w
+        weather AS w
         ON
             f.dep_airport = w.airport_code
-        AND
+            AND
             f.flight_date = w.weather_timestamp
 )
 

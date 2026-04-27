@@ -30,5 +30,5 @@ SELECT
 FROM raw_flights
 WHERE
     flightdate IS NOT NULL
-AND
+    AND
     tail_number IS NOT NULL;
