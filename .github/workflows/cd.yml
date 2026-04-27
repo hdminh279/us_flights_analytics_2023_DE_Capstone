@@ -7,7 +7,7 @@ on:
 jobs:
   deploy-to-production:
     runs-on: ubuntu-latest
-    environmest: production
+    environment: production
       
 
     env:
