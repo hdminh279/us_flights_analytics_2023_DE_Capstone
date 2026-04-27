@@ -1,0 +1,43 @@
+name: Data Engineering CD Pipeline
+
+on:
+  push:
+    branches: [ "main" ]
+
+jobs:
+  deploy-to-production:
+    runs-on: ubuntu-latest
+    environmest: production
+      
+
+    env:
+      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      AWS_DEFAULT_REGION: "ap-southeast-1"
+      TARGET_S3_BUCKET: ${{ secrets.TARGET_S3_BUCKET }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Terraform
+        uses: hashicorp/setup-terraform@v3
+
+      - name: Terraform Apply
+        working-directory: ./infra
+        run: |
+          terraform init 
+          terraform apply -auto-approve
+
+      - name: Sync Airflow Dags to S3 Production
+        run: |
+          aws s3 sync .airflow/dags s3://$TARGET_S3_BUCKET/dags/ --delete
+          
+      - name: Sync Spark Jobs to S3 Production
+        run: |
+          aws s3 sync .airflow/dags/spark_jobs s3://$TARGET_S3_BUCKET/spark_scripts/ --delete
+
+      - name: Sync dbt models to S3 Production
+        run: |
+          aws s3 sync ./airflow/dags/dbt_transform/us-flight-analytics s3://$TARGET_S3_BUCKET/dbt_models/ --delete
+

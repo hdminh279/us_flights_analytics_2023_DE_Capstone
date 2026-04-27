@@ -537,6 +537,24 @@ EOF
 
 ---
 
+## 🚀 DevOps & CI/CD Pipeline
+
+To ensure reliability and maintainability, this project implements an automated CI/CD pipeline using GitHub Actions, transitioning from a basic script to a production-grade workflow.
+
+### Continuous Integration (CI)
+On every Pull Request or Push to the `main` branch, the CI pipeline automatically executes:
+- **Linting & Formatting:** Enforces clean, standardized code using `Ruff` for Python (Spark/Airflow DAGs) and `SQLFluff` for SQL/dbt models.
+- **Infrastructure Validation:** Validates Terraform syntax and logic (`terraform validate`).
+- **Data Model Verification:** Runs `dbt compile` to convert Jinja templated models into raw SQL, catching syntax and macro errors before deployment.
+- **Environment Checks:** Tests the Docker Compose build to prevent dependency conflicts.
+
+### Continuous Deployment (CD)
+*(In implementation phase)*
+- **Infrastructure as Code (IaC):** Automated `terraform apply` to provision AWS resources (S3, Glue, Athena).
+- **Artifact Syncing:** Seamless deployment of Airflow DAGs and PySpark scripts to AWS S3.
+
+---
+
 ## 📦 Dependencies
 
 See [pyproject.toml](pyproject.toml) for complete list:

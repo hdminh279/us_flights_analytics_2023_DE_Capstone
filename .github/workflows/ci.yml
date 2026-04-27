@@ -13,13 +13,19 @@ jobs:
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
-
+      
       - name: Install uv
         uses: astral-sh/setup-uv@v2
       - name: Set up Python 3.11
         run: uv python install 3.11
       - name: Install dependencies
         run: uv sync
+
+      - name: Run Ruff (Python lint)
+        run: uv run ruff check .
+      - name: Run SQLFluff (SQL lint)
+        run: uv run sqlfluff lint airflow/dags/dbt_transform/us_flight_analytics/models
+
 
       - name: Test Docker Compose Build
         run: docker compose build
@@ -44,3 +50,4 @@ jobs:
           source ../../../../.venv/bin/activate
           dbt deps
           dbt parse
+          dbt compile
