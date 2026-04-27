@@ -24,7 +24,7 @@ jobs:
       - name: Run Ruff (Python lint)
         run: uv run ruff check .
       - name: Run SQLFluff (SQL lint)
-        run: uv run sqlfluff lint airflow/dags/dbt_transform/us_flight_analytics/models
+        run: uv run sqlfluff lint airflow/dags/dbt_transform/us_flight_analytics/models --dialect athena
 
 
       - name: Test Docker Compose Build
