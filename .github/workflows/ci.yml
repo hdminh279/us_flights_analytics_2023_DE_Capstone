@@ -41,11 +41,12 @@ jobs:
       - name: Check dbt syntax
         working-directory: ./airflow/dags/dbt_transform/us_flight_analytics
         env:
-          S3_ATHENA_RESULT: "dir_athena"
-          S3_BUCKET_FINAL_RESULT: "dir_athena"
-          DATABASE_NAME: "db_name"
-          AWS_ACCESS_KEY_ID: "dummy_access_key_for_ci_test"
-          AWS_SECRET_ACCESS_KEY: "dummy_secret_key_for_ci_test"
+          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          AWS_DEFAULT_REGION: "ap-southeast-1" 
+          S3_ATHENA_RESULT: ${{ secrets.S3_ATHENA_RESULT }}
+          S3_BUCKET_FINAL_RESULT: ${{ secrets.S3_BUCKET_FINAL_RESULT }}
+          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         run: |
           source ../../../../.venv/bin/activate
           dbt deps
