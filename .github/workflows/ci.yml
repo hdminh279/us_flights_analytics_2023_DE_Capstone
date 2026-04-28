@@ -41,6 +41,12 @@ jobs:
         uses: hashicorp/setup-terraform@v3
       - name: Terraform Init & Validate
         working-directory: ./infra
+
+        env:
+          TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+          TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+          TF_VAR_aws_region: "ap-southeast-1"
+
         run: |
           terraform init -backend=false
           terraform validate
