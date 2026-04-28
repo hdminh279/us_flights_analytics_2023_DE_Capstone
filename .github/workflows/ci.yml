@@ -7,7 +7,7 @@ on:
     branches: [ "main" ]
 
 jobs:
-  build-and-validate:
+  build-test-validate:
     runs-on: ubuntu-latest
     environment: production
 
@@ -16,11 +16,24 @@ jobs:
       AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
       AWS_DEFAULT_REGION: "ap-southeast-1"
       TARGET_S3_BUCKET: ${{ secrets.TARGET_S3_BUCKET }}
-    
+      S3_ATHENA_RESULT: ${{ secrets.S3_ATHENA_RESULT }}
+      S3_BUCKET_FINAL_RESULT: ${{ secrets.S3_BUCKET_FINAL_RESULT }}
+      DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
+      TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
+      TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+      TF_VAR_aws_region: "ap-southeast-1"
+
     steps:
       - name: Checkout repository
         uses: actions/checkout@v4
       
+      - name: Configure AWS Credentials
+        uses: aws-actions/configure-aws-credentials@v4
+        with:
+          aws-access-key-id: ${{ env.AWS_ACCESS_KEY_ID }}
+          aws-secret-access-key: ${{ env.AWS_SECRET_ACCESS_KEY }}
+          aws-region: ${{ env.AWS_DEFAULT_REGION }}
+
       - name: Install uv
         uses: astral-sh/setup-uv@v2
       - name: Set up Python 3.11
@@ -30,38 +43,25 @@ jobs:
 
       - name: Run Ruff (Python lint)
         run: uv run ruff check .
+        
       - name: Run SQLFluff (SQL lint)
         run: uv run sqlfluff lint airflow/dags/dbt_transform/us_flight_analytics/models --dialect athena
-
 
       - name: Test Docker Compose Build
         run: docker compose build
 
       - name: Setup Terraform
         uses: hashicorp/setup-terraform@v3
+        
       - name: Terraform Init & Validate
         working-directory: ./infra
-
-        env:
-          TF_VAR_aws_access_key: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          TF_VAR_aws_secret_key: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          TF_VAR_aws_region: "ap-southeast-1"
-
         run: |
           terraform init -backend=false
           terraform validate
 
-      - name: Check dbt syntax
+      - name: Check dbt syntax & compile
         working-directory: ./airflow/dags/dbt_transform/us_flight_analytics
-        env:
-          AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-          AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-          AWS_DEFAULT_REGION: "ap-southeast-1" 
-          S3_ATHENA_RESULT: ${{ secrets.S3_ATHENA_RESULT }}
-          S3_BUCKET_FINAL_RESULT: ${{ secrets.S3_BUCKET_FINAL_RESULT }}
-          DATABASE_NAME: ${{ secrets.DATABASE_NAME }}
         run: |
-          source ../../../../.venv/bin/activate
-          dbt deps
-          dbt parse
-          dbt compile
+          uv run dbt deps
+          uv run dbt parse
+          uv run dbt compile
