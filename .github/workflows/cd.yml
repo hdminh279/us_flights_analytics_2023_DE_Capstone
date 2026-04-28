@@ -31,6 +31,7 @@ jobs:
           AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
           AWS_DEFAULT_REGION: "ap-southeast-1"
           TARGET_S3_BUCKET: ${{ secrets.TARGET_S3_BUCKET }}
+          AWS_REGION: "ap-southeast-1"
 
         run: |
           terraform init 
