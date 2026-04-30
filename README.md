@@ -458,7 +458,6 @@ cd airflow/dags/dbt_transform/us_flight_analytics
 dbt test
 
 ```
-```
 
 ### Implemented Tests
 - **PySpark Unit Testing (pytest)**: Modularized testing for Spark transformations before writing to the Clean bucket.
@@ -468,7 +467,7 @@ dbt test
 
 ### Running Tests Manually
 
-**1. Spark Unit Tests (via pytest)**
+**Spark Unit Tests (via pytest)**
 Run the automated test suite locally to validate data transformations:
 ```bash
 # Ensure you are in the project root
