@@ -457,9 +457,22 @@ See [infra/README.md](infra/README.md) for infrastructure details
 cd airflow/dags/dbt_transform/us_flight_analytics
 dbt test
 
-# Spark validation
-docker-compose exec airflow-webserver python airflow/spark_jobs/spark_preprocessing.py
 ```
+```
+
+### Implemented Tests
+- **PySpark Unit Testing (pytest)**: Modularized testing for Spark transformations before writing to the Clean bucket.
+  - *Geo Validation*: Enforces physical boundaries (Lat -90/90, Lon -180/180), 3-letter IATA code constraints via Regex, and duplicate removal.
+  - *Flight & Weather Validation*: Trims string artifacts, enforces positive flight durations, and strictly drops records missing essential dimension keys.
+- **dbt Testing**: Validates model outputs (uniqueness, not-null constraints, referential integrity).
+
+### Running Tests Manually
+
+**1. Spark Unit Tests (via pytest)**
+Run the automated test suite locally to validate data transformations:
+```bash
+# Ensure you are in the project root
+uv run python -m pytest test/test_spark.py -v
 
 ---
 
