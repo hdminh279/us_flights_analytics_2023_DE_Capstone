@@ -6,6 +6,18 @@ sources:
     schema: us_flight_database
     tables:
       - name: clean_geo
-      - name: clean_flights
       - name: clean_weather
       - name: clean_cancelled_diverted
+      - name: clean_flights
+        columns:
+          - name: Dep_Airport
+            tests:
+              -relationships:
+                to: sources('aws_data_lake', 'clean_geo')
+                field: IATA_CODE
+
+          - name: Arr_Airport
+            tests:
+              -relationships:
+                to: sources('aws_data_lake', 'clean_geo')
+                field: IATA_CODE

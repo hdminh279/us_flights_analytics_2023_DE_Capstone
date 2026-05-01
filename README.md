@@ -467,12 +467,19 @@ dbt test
 
 ### Running Tests Manually
 
-**Spark Unit Tests (via pytest)**
+**1. Spark Unit Tests (via pytest)**
 Run the automated test suite locally to validate data transformations:
 ```bash
 # Ensure you are in the project root
 uv run python -m pytest test/test_spark.py -v
+```
 
+**2. dbt Tests**
+Validate the analytical models and business logic in the data warehouse:
+```bash
+cd airflow/dags/dbt_transform/us_flight_analytics
+uv run dbt test
+```
 ---
 
 ## 🐛 Troubleshooting

@@ -65,3 +65,11 @@ jobs:
           uv run dbt deps
           uv run dbt parse
           uv run dbt compile
+
+      - name: Run PySpark Unit Test
+        run: uv run python -m pytest test/test_pyspark.py
+
+      - name: Run dbt Test (Data Quality & Integrity)
+        run: |
+          uv run dbt deps
+          uv run dbt test
