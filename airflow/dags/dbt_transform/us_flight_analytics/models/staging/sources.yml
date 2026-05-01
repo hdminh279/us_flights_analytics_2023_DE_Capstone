@@ -12,12 +12,12 @@ sources:
         columns:
           - name: Dep_Airport
             tests:
-              -relationships:
-                to: sources('aws_data_lake', 'clean_geo')
-                field: IATA_CODE
+              - relationships:
+                  to: source('aws_data_lake', 'clean_geo')
+                  field: IATA_CODE
 
           - name: Arr_Airport
             tests:
-              -relationships:
-                to: sources('aws_data_lake', 'clean_geo')
-                field: IATA_CODE
+              - relationships:
+                  to: source('aws_data_lake', 'clean_geo')
+                  field: IATA_CODE

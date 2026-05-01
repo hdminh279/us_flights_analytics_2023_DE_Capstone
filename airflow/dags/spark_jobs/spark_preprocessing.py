@@ -133,7 +133,7 @@ if __name__ == "__main__":
         types.StructField('Delay_LastAircraft', types.IntegerType(), True), 
         types.StructField('Manufacturer', types.StringType(), True), 
         types.StructField('Model', types.StringType(), True), 
-        types.StructField('Aicraft_age', types.IntegerType(), True)]
+        types.StructField('Aircraft_age', types.IntegerType(), True)]
     )
 
     df_flights = spark.read \
