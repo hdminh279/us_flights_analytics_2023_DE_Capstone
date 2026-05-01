@@ -479,6 +479,15 @@ Validate the analytical models and business logic in the data warehouse:
 ```bash
 cd airflow/dags/dbt_transform/us_flight_analytics
 uv run dbt test
+
+```
+**3. End-to-End (E2E) Integration Testing**
+An automated shell script simulates and validates the full pipeline execution flow (Spark → dbt → Athena) in a continuous environment. This ensures all components integrate correctly and data flows smoothly before production deployment.
+```bash
+```bash
+# Execute the E2E pipeline test
+./test/e2e_integration_test.sh
+
 ```
 ---
 
