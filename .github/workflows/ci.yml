@@ -70,6 +70,7 @@ jobs:
         run: uv run python -m pytest test/test_spark.py
 
       - name: Run dbt Test (Data Quality & Integrity)
+        working-directory: ./airflow/dags/dbt_transform/us_flight_analytics
         run: |
           uv run dbt deps
           uv run dbt test
