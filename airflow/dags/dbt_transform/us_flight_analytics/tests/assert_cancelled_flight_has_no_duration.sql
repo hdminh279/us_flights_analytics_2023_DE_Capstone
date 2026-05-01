@@ -1,8 +1,8 @@
 SELECT 
-    Tail_Number,
-    FlightDate,
-    Cancelled,
-    Flight_Duration
+    tail_number,
+    flight_date,
+    cancelled,
+    flight_duration
 FROM {{ ref('stg_cancelled') }}
-WHERE Cancelled = 1 
-  AND Flight_Duration > 0
+WHERE cancelled = 1 
+  AND flight_duration > 0

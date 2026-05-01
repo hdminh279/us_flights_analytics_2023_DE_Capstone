@@ -10,7 +10,7 @@ SELECT
 
     cancelled,
     diverted,
-
+    flight_duration,
     dep_airport,
     dep_cityname,
     deptime_label,
