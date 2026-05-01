@@ -568,7 +568,6 @@ On every Pull Request or Push to the `main` branch, the CI pipeline automaticall
 - **Environment Checks:** Tests the Docker Compose build to prevent dependency conflicts.
 
 ### Continuous Deployment (CD)
-*(In implementation phase)*
 - **Infrastructure as Code (IaC):** Automated `terraform apply` to provision AWS resources (S3, Glue, Athena).
 - **Artifact Syncing:** Seamless deployment of Airflow DAGs and PySpark scripts to AWS S3.
 
