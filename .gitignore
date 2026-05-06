@@ -72,7 +72,6 @@ infra/variables.tf
 .env
 .env.local
 .env.*.local
-.env*.example
 secrets/
 credentials/
 .aws/
