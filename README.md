@@ -395,7 +395,7 @@ docker-compose exec airflow-webserver airflow dags trigger flight_delay_pipeline
 
 ---
 
-### Pipeline Tasks (in order)
+### Pipeline Tasks
 
 1. `create_tmp_folder` - Create temporary directory
 2. `download_kaggle_data` - Download dataset from Kaggle
@@ -407,6 +407,10 @@ docker-compose exec airflow-webserver airflow dags trigger flight_delay_pipeline
 8. `dbt_run_models` - Build dbt models
 9. `dbt_test_models` - Run dbt tests
 
+### Alerting & Incident Management
+To ensure pipeline reliability in a production-like environment:
+- **Automated Retries**: Configured Airflow DAGs with optimized retry mechanisms (1 retry, 1-minute delay) to handle transient failures.
+- **Email Alerting**: Integrated SMTP configuration for real-time `email_on_failure` alerts. If a critical task fails after retries, an incident alert is dispatched immediately to the data engineering team.
 ---
 
 ## 📊 Dashboard Specifications
