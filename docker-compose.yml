@@ -14,6 +14,11 @@ x-airflow-common:
     TARGET_S3_BUCKET: ${TARGET_S3_BUCKET}
     KAGGLE_USERNAME: ${KAGGLE_USERNAME}
     KAGGLE_KEY: ${KAGGLE_KEY}
+    AIRFLOW__METRICS__STATSD_ON: 'true'
+    AIRFLOW__METRICS__STATSD_HOST: statsd-exporter
+    AIRFLOW__METRICS__STATSD_PORT: 9125
+    AIRFLOW__METRICS__STATSD_PREFIX: airflow
+    _PIP_ADDITIONAL_REQUIREMENTS: statsd
   volumes:
     - ./airflow/dags:/opt/airflow/dags
     - ./airflow/logs:/opt/airflow/logs
@@ -75,6 +80,40 @@ services:
       - ./metabase-data:/metabase-data 
     environment:
       MB_DB_FILE: /metabase-data/metabase.db
+    restart: always
+
+  statsd-exporter:
+    image: prom/statsd-exporter:v0.24.0
+    container_name: statsd-exporter
+    command: "--statsd.mapping-config=/etc/statsd-exporter/statsd-mapping.yml"
+    volumes:
+      - ./monitoring/statsd-mapping.yml:/etc/statsd-exporter/statsd-mapping.yml
+    ports:
+      - "9102:9102"
+      - "9125:9125/udp"
+    restart: always
+  
+  prometheus:
+    image: prom/prometheus:v2.45.0
+    container_name: prometheus
+    volumes:
+      - ./monitoring/prometheus.yml:/etc/prometheus/prometheus.yml
+    ports:
+      - "9090:9090"
+    depends_on:
+      - statsd-exporter
+    restart: always
+
+  grafana:
+    image: grafana/grafana:10.0.3
+    container_name: grafana
+    ports:
+      - "3031:3000"
+    environment:
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_SECURITY_ADMIN_USER=admin
+    depends_on:
+      - prometheus
     restart: always
 
 volumes:

@@ -13,6 +13,7 @@ dependencies = [
     "dbt-athena-community==1.10.0",
     "ruff>=0.15.12",
     "sqlfluff>=4.1.0",
+    "statsd>=4.0.1",
 ]
 
 [dependency-groups]

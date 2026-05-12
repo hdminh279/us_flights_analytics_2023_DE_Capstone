@@ -14,6 +14,7 @@ Build a scalable, automated batch pipeline that ingests raw data from external s
 - ✅ **Analytics Engineering**: Build modular, tested transformations (dbt)
 - ✅ **Data Quality**: Implement validation and testing throughout
 - ✅ **Reproducibility**: Fully containerized, documented, ready for deployment
+- ✅ **System Observation**: Monitor pipeline health and performance metrics in real-time (Prometheus & Grafana)
 
 **Analytics & Business Objectives:**
 The pipeline enables answering critical questions about flight operations:
@@ -42,7 +43,7 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
 
 ```
 ┌─────────────────────────────────────────────────────────────────────────┐
-│                         DATA PIPELINE FLOW                              │
+│                          DATA PIPELINE FLOW                             │
 └─────────────────────────────────────────────────────────────────────────┘
 
  Step 1: INGEST                    Step 2: PROCESS                 Step 3: TRANSFORM
@@ -50,38 +51,30 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
 │ Kaggle API       │          │ Apache Spark     │           │ dbt + AWS Athena   │
 │ (Download Data)  │ ────────>│ (Clean & Filter) │ ────────> │ (Business Logic)   │
 └──────────────────┘          └──────────────────┘           └────────────────────┘
-        │                             │                               │
-        ▼                             ▼                               ▼
-    AWS S3                       AWS S3                          AWS S3
-    (Raw Bucket)                 (Clean Bucket)                  (Business Bucket)
-        │                             │                               │
-        └─────────────────────────────┴───────────────────────────────┘
+        │                             │                              │
+        ▼                             ▼                              ▼
+    AWS S3                        AWS S3                          AWS S3
+    (Raw Bucket)                  (Clean Bucket)                  (Business Bucket)
+        │                             │                              │
+        └─────────────────────────────┴──────────────────────────────┘
                                       │
                                       ▼
                         ┌─────────────────────────────┐
                         │  Metabase Dashboard         │
                         │  (Visualization & BI)       │
                         └─────────────────────────────┘
-                                      │
-                                      ▼
-                        ┌─────────────────────────────┐
-                        │  Business Insights          │
-                        │  - Delay trends             │
-                        │  - Airline performance      │
-                        │  - Route analytics          │
-                        └─────────────────────────────┘
 
-                        ┌──────────────────────────────┐
-                        │ ORCHESTRATION                │
-                        │ Apache Airflow (Docker)      │
-                        │ Manages all pipeline steps   │
-                        └──────────────────────────────┘
-                        
-                        ┌──────────────────────────────┐
-                        │ INFRASTRUCTURE               │
-                        │ Terraform (IaC)              │
-                        │ Provisions AWS resources     │
-                        └──────────────────────────────┘
+┌──────────────────────────────┐        ┌──────────────────────────────┐
+│ ORCHESTRATION                │        │ OBSERVABILITY & MONITORING   │
+│ Apache Airflow (Docker)      │ ──────>│ StatsD -> Prometheus         │
+│ Manages all pipeline steps   │        │ Grafana Dashboards           │
+└──────────────────────────────┘        └──────────────────────────────┘
+                               
+┌──────────────────────────────┐
+│ INFRASTRUCTURE               │
+│ Terraform (IaC)              │
+│ Provisions AWS resources     │
+└──────────────────────────────┘
 ```
 
 ---
@@ -96,6 +89,7 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
 | **Orchestration** | Apache Airflow 2.9.0 | Schedule and manage pipeline DAGs |
 | **Batch Processing** | Apache Spark 3.5.0 | Data cleaning and transformation at scale |
 | **Data Transformation** | dbt 1.10.0 | SQL-based analytics engineering with testing |
+| **Observation** | Prometheus & Grafana | Real-time pipeline health and system metrics tracking |
 | **Data Lake Format** | Parquet (Snappy compression) | Efficient columnar storage |
 | **Data Warehouse** | AWS Athena | SQL queries on S3 data |
 | **Visualization** | Metabase | Interactive BI dashboard |
@@ -103,7 +97,18 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
 | **Containerization** | Docker + Docker Compose | Reproducible environment |
 
 ---
+## 👁️ System Monitoring & Observability
 
+To ensure production-grade reliability, the infrastructure includes a dedicated monitoring stack. This provides operational visibility into how the data pipeline performs under the hood.
+
+**Metrics Flow:** `Airflow (StatsD Client) -> StatsD Exporter -> Prometheus -> Grafana`
+
+Currently, this setup focuses on tracking core system metrics:
+- **Pipeline Health:** Tracking DAG successes, failures, and execution durations (`Success DAG run duration`).
+- **Resource Bottlenecks:** Monitoring `Executor running tasks` vs `Executor queued tasks` to ensure the system isn't overloaded during the heavy Spark processing phase.
+- **System Responsiveness:** Observing the `Scheduler heartbeat` and `DAG processing parse time` to gauge Airflow's internal health.
+
+---
 ## 📁 Project Structure
 
 ```
