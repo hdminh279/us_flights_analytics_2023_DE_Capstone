@@ -46,7 +46,7 @@ def clean_flight(df):
 
 def can_div_clean(df):
     df_clean = df.dropna(subset=['FlightDate', 'Airline', 'Dep_Airport', 'Arr_Airport'])
-    df_clean = df.withColumn("FlightDate", F.to_date(F.col("FlightDate"), "yyyy-MM-dd HH:mm:ss"))
+    df_clean = df_clean.withColumn("FlightDate", F.to_date(F.col("FlightDate"), "yyyy-MM-dd HH:mm:ss"))
     df_clean = df_clean.filter(F.col("Day_Of_Week").between(1, 7))
     df_clean = df_clean.filter(F.col("Dep_Delay_Tag").between(0,1)) 
 
