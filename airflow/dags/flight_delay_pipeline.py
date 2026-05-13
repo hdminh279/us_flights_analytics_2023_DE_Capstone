@@ -55,6 +55,8 @@ with DAG(
     spark_clean_data = BashOperator(
         task_id = "spark_preprocessing_job",
         bash_command = """spark-submit \
+        --master spark://spark-master:7077 \
+        --executor-memory 3g \
         --packages org.apache.hadoop:hadoop-aws:3.3.2,com.amazonaws:aws-java-sdk-bundle:1.12.115 \
         /opt/airflow/dags/spark_jobs/spark_preprocessing.py
         """

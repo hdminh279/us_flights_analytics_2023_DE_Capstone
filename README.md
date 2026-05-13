@@ -65,16 +65,17 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
                         └─────────────────────────────┘
 
 ┌──────────────────────────────┐        ┌──────────────────────────────┐
-│ ORCHESTRATION                │        │ OBSERVABILITY & MONITORING   │
-│ Apache Airflow (Docker)      │ ──────>│ StatsD -> Prometheus         │
-│ Manages all pipeline steps   │        │ Grafana Dashboards           │
+│ ORCHESTRATION                │        │ COMPUTE CLUSTER (Docker)     │
+│ Apache Airflow (Docker)      │ ──────>│ Apache Spark (Standalone)    │
+│ (Triggers & Manages)         │        │ - 1 Master & 1 Worker Node   │
 └──────────────────────────────┘        └──────────────────────────────┘
                                
-┌──────────────────────────────┐
-│ INFRASTRUCTURE               │
-│ Terraform (IaC)              │
-│ Provisions AWS resources     │
-└──────────────────────────────┘
+┌──────────────────────────────┐        ┌──────────────────────────────┐
+│ INFRASTRUCTURE               │        │ OBSERVABILITY & MONITORING   │
+│ Terraform (IaC)              │        │ - Prometheus & Grafana       │
+│ Provisions AWS resources     │        │ - Spark Web UI (Port 8081)   │
+└──────────────────────────────┘        └──────────────────────────────┘
+
 ```
 
 ---
@@ -87,7 +88,7 @@ Kaggle → S3 (Raw) → Spark → S3 (Clean) → dbt/Athena → Dashboard
 | **Cloud Provider** | AWS | Data lake (S3), Data warehouse (Athena), Catalog (Glue) |
 | **Infrastructure as Code** | Terraform | Provision and manage AWS resources |
 | **Orchestration** | Apache Airflow 2.9.0 | Schedule and manage pipeline DAGs |
-| **Batch Processing** | Apache Spark 3.5.0 | Data cleaning and transformation at scale |
+| **Batch Processing** | Apache Spark 3.5.0 (Standalone Cluster) | Distributed data cleaning via Master-Worker architecture in Docker |
 | **Data Transformation** | dbt 1.10.0 | SQL-based analytics engineering with testing |
 | **Observation** | Prometheus & Grafana | Real-time pipeline health and system metrics tracking |
 | **Data Lake Format** | Parquet (Snappy compression) | Efficient columnar storage |
@@ -107,6 +108,7 @@ Currently, this setup focuses on tracking core system metrics:
 - **Pipeline Health:** Tracking DAG successes, failures, and execution durations (`Success DAG run duration`).
 - **Resource Bottlenecks:** Monitoring `Executor running tasks` vs `Executor queued tasks` to ensure the system isn't overloaded during the heavy Spark processing phase.
 - **System Responsiveness:** Observing the `Scheduler heartbeat` and `DAG processing parse time` to gauge Airflow's internal health.
+- **Spark Cluster Visibility:** Monitoring real-time resource allocation (CPU/RAM usage) and task distribution across the Master and Worker nodes via the Spark Web UI at `localhost:8081`.
 
 ---
 ## 📁 Project Structure
@@ -598,6 +600,8 @@ This pipeline is designed not just to process data, but to do so efficiently and
 - **Compute & Pipeline Efficiency**: The entire End-to-End Airflow DAG—from raw data ingestion, Spark distributed processing (cleaning 6+ million records), to dbt modeling and testing—executes successfully in range **7 minutes**.
 - **Storage Optimization**: By transforming raw CSVs into **Snappy-compressed Parquet** files, the data lake storage footprint was reduced by approximately **75%**, minimizing AWS S3 storage constraints and accelerating read I/O.
 - **Query Cost Reduction**: AWS Athena charges per TB of data scanned. By strategically **partitioning the business layer by `Year` and `Month`** and utilizing columnar storage, Metabase dashboard queries now scan only a few megabytes instead of gigabytes. This architectural choice reduces data scanned per query by over **90%**, demonstrating a highly scalable and cost-effective design for enterprise environments.
+- **Compute Isolation & Efficiency:** Transitioned from Local mode to a dedicated Spark Master-Worker Cluster. By allocating **3GB RAM** to the Spark Worker, the pipeline processes over **6 million records** in approximately **3 - 3.5 minutes**, significantly improving system stability and preventing Airflow scheduler bottlenecks.
+- **Resource Tuning:** Optimized Spark-Submit configurations (`--executor-memory 3g`) to maximize throughput on local hardware while maintaining enough overhead for the observability stack.
 
 ---
 

@@ -12,8 +12,8 @@ RUN apt-get update \
 USER airflow
 
 RUN pip install --no-cache-dir \
-    pyspark \
-    dbt-core \
-    dbt-athena-community \
+    pyspark==3.5.0 \
+    dbt-core==1.9.0 \
+    dbt-athena-community==1.10.0 \
     awscli \
     kaggle
