@@ -57,6 +57,7 @@ dbt_project.yml.old
 terraform.tfstate
 terraform.tfstate.*
 *.tfstate
+*.tfstate.backup
 *.tfstate.*
 **/*.tfvars
 **/*.tfvars.json

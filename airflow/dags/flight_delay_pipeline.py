@@ -12,7 +12,7 @@ with DAG(
         "retry_delay": timedelta(minutes=1),
         "email_on_failure": True,
         "email_on_retry": False,
-        "email": ['hoducminh09@gmail.com']
+        "email": ['your_email@example.com']
     },
 
     description="End-to-End Pipeline: Kaggle -> S3(Raw) -> Spark -> S3(Clean) -> dbt/Athena -> S3(Bussiness)",
