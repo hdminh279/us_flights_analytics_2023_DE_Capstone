@@ -19,7 +19,7 @@
 
     {% set query_weather %}
         CREATE EXTERNAL TABLE IF NOT EXISTS {{ db }}.clean_weather (
-          time TIMESTAMP,
+          time STRING,
           tavg FLOAT,
           tmin FLOAT,
           tmax FLOAT,
@@ -36,7 +36,7 @@
 
     {% set query_cancelled %}
         CREATE EXTERNAL TABLE IF NOT EXISTS {{ db }}.clean_cancelled_diverted (
-          flightdate TIMESTAMP,
+          flightdate STRING,
           day_of_week INT,
           airline STRING,
           tail_number STRING,
@@ -66,7 +66,7 @@
 
     {% set query_flights %}
         CREATE EXTERNAL TABLE IF NOT EXISTS {{ db }}.clean_flights (
-          flightdate TIMESTAMP,
+          flightdate STRING,
           day_of_week INT,
           airline STRING,
           tail_number STRING,

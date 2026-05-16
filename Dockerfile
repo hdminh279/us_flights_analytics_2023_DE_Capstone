@@ -11,9 +11,13 @@ RUN apt-get update \
 
 USER airflow
 
-RUN pip install --no-cache-dir \
+RUN pip install --no-cache-dir uv
+
+RUN uv pip install --system --no-cache \
+   "apache-airflow==2.9.0" \
     pyspark==3.5.0 \
     dbt-core==1.9.0 \
     dbt-athena-community==1.10.0 \
+    apache-airflow-providers-apache-spark==4.8.0 \
     awscli \
     kaggle

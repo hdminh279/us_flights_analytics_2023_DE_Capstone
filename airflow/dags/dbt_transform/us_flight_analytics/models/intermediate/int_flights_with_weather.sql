@@ -22,7 +22,7 @@ joined_flights_weather AS (
         ON
             f.dep_airport = w.airport_code
             AND
-            f.flight_date = w.weather_timestamp
+            f.flight_date = w.time
 )
 
 SELECT * FROM joined_flights_weather

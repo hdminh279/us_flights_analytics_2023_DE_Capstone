@@ -3,7 +3,7 @@ WITH raw_cancelled AS (
 )
 
 SELECT
-    flightdate AS flight_date,
+    CAST(flightdate AS DATE) AS flight_date,
     day_of_week,
     airline,
     tail_number,

@@ -3,6 +3,7 @@ from airflow.operators.bash import BashOperator
 from airflow.operators.python import ShortCircuitOperator
 from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from datetime import datetime, timedelta
+import os
 
 with DAG(
     dag_id="flight_delay_pipeline",
@@ -14,7 +15,7 @@ with DAG(
         "retry_delay": timedelta(minutes=1),
         "email_on_failure": True,
         "email_on_retry": False,
-        "email": ['your_email@example.com']
+        "email": [os.environ.get('ALERT_EMAIL', 'your_email@example.com')]
     },
 
     description="End-to-End Pipeline: Kaggle -> S3(Raw) -> Spark -> S3(Clean) -> dbt/Athena -> S3(Bussiness)",
@@ -59,7 +60,6 @@ with DAG(
         task_id = "spark_preprocessing_job",
         application="/opt/airflow/dags/spark_jobs/spark_preprocessing.py",
         conf={
-            "spark.master": "spark://spark-master:7077",
             "spark.executor.memory": "3g"
         },
         packages="org.apache.hadoop:hadoop-aws:3.2.2,com.amazonaws:aws-java-sdk-bundle:1.12.115",

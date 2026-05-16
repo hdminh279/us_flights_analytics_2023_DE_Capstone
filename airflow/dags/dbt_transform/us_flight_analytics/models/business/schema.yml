@@ -30,11 +30,13 @@ models:
         tests:
           - accepted_values:
               values: [0, 1]
+              quote: false
       - name: is_extreme_weather
         description: "Binary flag: 1 if snow > 0mm OR wind > 40km/h OR precipitation > 20mm"
         tests:
           - accepted_values:
               values: [0, 1]
+              quote: false
       - name: avg_temp_c
         description: "Average temperature (°C) at departure airport"
       - name: precipitation_mm
@@ -113,6 +115,7 @@ models:
           - not_null
           - accepted_values:
               values: [1, 2, 3, 4, 5, 6, 7]
+              quote: false
       - name: deptime_label
         description: "Time-of-day block (Morning, Afternoon, Evening, Night)"
         tests:

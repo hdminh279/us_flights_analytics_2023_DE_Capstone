@@ -26,7 +26,7 @@ def clean_airport_geo(df):
 def clean_flight(df):
     df_clean = df.dropna(subset=['FlightDate', 'Airline', 'Dep_Airport', 'Arr_Airport'])
 
-    df_clean = df_clean.withColumn("FlightDate", F.to_date(F.col("FlightDate"), "yyyy-MM-dd HH:mm:ss"))
+    df_clean = df_clean.withColumn("FlightDate", F.to_date(F.col("FlightDate"), "yyyy-MM-dd HH:mm:ss").cast("string"))
     df_clean = df_clean.filter(F.col("Day_Of_Week").between(1, 7))
     df_clean = df_clean.filter(F.col("Dep_Delay_Tag").between(0,1)) 
     df_clean = df_clean.filter(F.col("Flight_Duration") > 0)
@@ -48,7 +48,7 @@ def clean_flight(df):
 
 def can_div_clean(df):
     df_clean = df.dropna(subset=['FlightDate', 'Airline', 'Dep_Airport', 'Arr_Airport'])
-    df_clean = df_clean.withColumn("FlightDate", F.to_date(F.col("FlightDate"), "yyyy-MM-dd HH:mm:ss"))
+    df_clean = df_clean.withColumn("FlightDate", F.to_date(F.col("FlightDate"), "yyyy-MM-dd HH:mm:ss").cast("string"))
     df_clean = df_clean.filter(F.col("Day_Of_Week").between(1, 7))
     df_clean = df_clean.filter(F.col("Dep_Delay_Tag").between(0,1)) 
 
@@ -67,7 +67,7 @@ def can_div_clean(df):
 
 def weather_clean(df):
     df_clean = df.dropna(subset=['time'])
-    df_clean = df_clean.withColumn("time", F.to_date(F.col("time"), "yyyy-MM-dd HH:mm:ss"))
+    df_clean = df_clean.withColumn("time", F.to_date(F.col("time"), "yyyy-MM-dd HH:mm:ss").cast("string"))
 
     weather_float = ['tavg', 'tmin', 'tmax', 'prcp', 'snow', 'wdir', 'wspd', 'pres']
     for col_name in weather_float:
@@ -96,6 +96,7 @@ if __name__ == "__main__":
             .config("spark.hadoop.fs.s3a.connection.timeout", "60000") \
             .config("spark.hadoop.fs.s3a.connection.establish.timeout", "5000") \
             .config("spark.hadoop.fs.s3a.multipart.purge.age", "86400") \
+            .config("spark.sql.parquet.outputTimestampType", "TIMESTAMP_MILLIS") \
             .getOrCreate()
 
         logger.info("Spark Session create complete")
@@ -119,7 +120,7 @@ if __name__ == "__main__":
 
         df_airport_geo_clean = clean_airport_geo(df_airport_geo)
         df_airport_geo_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/geo",mode="overwrite")
-        logger.info(f"airport_geo complete, number of records: {df_airport_geo_clean.count()}")
+        logger.info(f"airport_geo complete")
 
         # FLIGHTS
         flights_schema = types.StructType([
@@ -165,7 +166,7 @@ if __name__ == "__main__":
         df_flights_final_clean = df_flights_clean.unionByName(df_flights_24_clean)
 
         df_flights_final_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/flights", mode="overwrite")
-        logger.info(f"Flights complete, number of records: {df_flights_final_clean.count()}")
+        logger.info(f"Flights complete")
 
         # CANCELLED & DIVERTED
         can_div_schema = types.StructType([
@@ -202,7 +203,7 @@ if __name__ == "__main__":
         df_can_div_clean = can_div_clean(df_can_div)
 
         df_can_div_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/cancelled_diverted", mode="overwrite")
-        logger.info(f"Cancelled & Diverted complete, number of records: {df_can_div_clean.count()}")
+        logger.info(f"Cancelled & Diverted complete")
 
         # WEATHER
         weather_schema = types.StructType([
@@ -226,7 +227,7 @@ if __name__ == "__main__":
         df_weather_clean = weather_clean(df_weather)
 
         df_weather_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/weather", mode="overwrite")
-        logger.info(f"Weather complete, number of records: {df_weather_clean.count()}")
+        logger.info(f"Weather complete")
 
         logger.info("Spark complete")
     except Exception as e:

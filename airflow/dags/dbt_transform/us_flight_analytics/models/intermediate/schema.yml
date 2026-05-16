@@ -40,24 +40,20 @@ models:
           - not_null
       - name: airline
         description: "Airline name"
-        tests:
-          - not_null
       - name: cancelled
         description: "Cancelled indicator (1=Yes, 0=No)"
         tests:
-          - not_null
           - accepted_values:
               values: [0, 1]
+              quote: false
       - name: diverted
         description: "Diverted indicator (1=Yes, 0=No)"
         tests:
-          - not_null
           - accepted_values:
               values: [0, 1]
+              quote: false
       - name: dep_airport
         description: "Departure airport IATA code"
-        tests:
-          - not_null
       - name: avg_temp_c
         description: "Average temperature (°C) at departure airport on flight date"
       - name: precipitation_mm

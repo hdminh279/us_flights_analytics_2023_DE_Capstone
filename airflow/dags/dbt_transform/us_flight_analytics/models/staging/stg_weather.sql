@@ -4,7 +4,7 @@ WITH raw_weather AS (
 
 SELECT
     airport_id AS airport_code,
-    time AS weather_timestamp,
+    CAST(time AS DATE) as time,
     tavg AS avg_temp_c,
     prcp AS precipitation_mm,
     snow AS snow_mm,
