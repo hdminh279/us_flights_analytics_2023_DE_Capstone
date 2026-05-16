@@ -54,5 +54,5 @@ SELECT
 FROM joined_data
 
 {% if is_incremental() %}
-    WHERE flight_date > (SELECT MAX(flight_date) FROM {{ this }})
+    WHERE flight_date > (SELECT MAX(t.flight_date) FROM {{ this }} AS t)
 {% endif %}

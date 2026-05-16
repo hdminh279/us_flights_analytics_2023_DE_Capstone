@@ -9,7 +9,7 @@ SELECT
     snow AS snow_mm,
     wspd AS wind_speed_kmh,
     pres AS sea_level_pressure,
-    CAST(time AS DATE) AS time
+    CAST(time AS DATE) AS weather_time
 FROM raw_weather
 WHERE
     airport_id IS NOT NULL
