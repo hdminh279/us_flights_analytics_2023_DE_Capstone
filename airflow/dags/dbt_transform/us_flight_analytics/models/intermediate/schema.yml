@@ -1,0 +1,68 @@
+version: 2
+
+models:
+  - name: int_flights_with_weather
+    description: "Flights enriched with weather data at departure airport on flight date"
+    columns:
+      - name: flight_date
+        description: "Flight departure date"
+        tests:
+          - not_null
+      - name: airline
+        description: "Airline name"
+        tests:
+          - not_null
+      - name: dep_airport
+        description: "Departure airport IATA code"
+        tests:
+          - not_null
+      - name: arr_airport
+        description: "Arrival airport IATA code"
+        tests:
+          - not_null
+      - name: departure_delay_minutes
+        description: "Departure delay in minutes"
+      - name: avg_temp_c
+        description: "Average temperature (°C) at departure airport on flight date"
+      - name: precipitation_mm
+        description: "Total precipitation (mm) at departure airport on flight date"
+      - name: snow_mm
+        description: "Snow depth (mm) at departure airport on flight date"
+      - name: wind_speed_kmh
+        description: "Average wind speed (km/h) at departure airport on flight date"
+
+  - name: int_cancelled_with_weather
+    description: "Cancelled/diverted flights enriched with weather data at departure airport"
+    columns:
+      - name: flight_date
+        description: "Flight departure date"
+        tests:
+          - not_null
+      - name: airline
+        description: "Airline name"
+        tests:
+          - not_null
+      - name: cancelled
+        description: "Cancelled indicator (1=Yes, 0=No)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: diverted
+        description: "Diverted indicator (1=Yes, 0=No)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [0, 1]
+      - name: dep_airport
+        description: "Departure airport IATA code"
+        tests:
+          - not_null
+      - name: avg_temp_c
+        description: "Average temperature (°C) at departure airport on flight date"
+      - name: precipitation_mm
+        description: "Total precipitation (mm)"
+      - name: snow_mm
+        description: "Snow depth (mm)"
+      - name: wind_speed_kmh
+        description: "Average wind speed (km/h)"

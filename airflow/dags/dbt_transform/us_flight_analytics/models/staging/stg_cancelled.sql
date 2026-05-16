@@ -10,7 +10,6 @@ SELECT
 
     cancelled,
     diverted,
-    flight_duration,
     dep_airport,
     dep_cityname,
     deptime_label,
@@ -25,3 +24,4 @@ WHERE
     flightdate IS NOT NULL
     AND
     tail_number IS NOT NULL
+

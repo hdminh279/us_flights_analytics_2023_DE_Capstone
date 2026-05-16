@@ -1,0 +1,125 @@
+version: 2
+
+models:
+  - name: fact_flight_weather_analytics
+    description: "Core fact table — each row is one flight enriched with weather and delay classification. Partitioned by year/month for Athena cost optimization."
+    columns:
+      - name: flight_date
+        description: "Flight departure date"
+        tests:
+          - not_null
+      - name: airline
+        description: "Airline name"
+        tests:
+          - not_null
+      - name: tail_number
+        description: "Aircraft tail number"
+      - name: dep_airport
+        description: "Departure airport IATA code"
+        tests:
+          - not_null
+      - name: departure_delay_minutes
+        description: "Departure delay in minutes (negative = early)"
+      - name: delay_severity
+        description: "Delay classification bucket"
+        tests:
+          - accepted_values:
+              values: ['On Time', 'Slight Delay', 'Moderate Delay', 'Severe Delay']
+      - name: is_delayed
+        description: "Binary flag: 1 if departure delay > 15 minutes"
+        tests:
+          - accepted_values:
+              values: [0, 1]
+      - name: is_extreme_weather
+        description: "Binary flag: 1 if snow > 0mm OR wind > 40km/h OR precipitation > 20mm"
+        tests:
+          - accepted_values:
+              values: [0, 1]
+      - name: avg_temp_c
+        description: "Average temperature (°C) at departure airport"
+      - name: precipitation_mm
+        description: "Total precipitation (mm)"
+      - name: snow_mm
+        description: "Snow depth (mm)"
+      - name: wind_speed_kmh
+        description: "Average wind speed (km/h)"
+      - name: flight_year
+        description: "Partition key — extracted year from flight_date"
+        tests:
+          - not_null
+      - name: flight_month
+        description: "Partition key — extracted month from flight_date"
+        tests:
+          - not_null
+
+  - name: mart_airline_performance
+    description: "Airline-level KPIs: total flights, delayed flights, delay rate, avg delay minutes"
+    columns:
+      - name: airline
+        description: "Airline name"
+        tests:
+          - unique
+          - not_null
+      - name: total_flights
+        description: "Total number of flights operated"
+        tests:
+          - not_null
+      - name: total_delayed_flights
+        description: "Number of flights delayed more than 15 minutes"
+      - name: delay_rate_percentage
+        description: "Percentage of flights delayed (delayed/total * 100)"
+      - name: avg_delay_minutes
+        description: "Average departure delay in minutes across all flights"
+
+  - name: mart_airline_monthly_trend
+    description: "Monthly flight volume and delay rate per airline for trend analysis"
+    columns:
+      - name: airline
+        description: "Airline name"
+        tests:
+          - not_null
+      - name: flight_year
+        description: "Year"
+        tests:
+          - not_null
+      - name: flight_month
+        description: "Month (1-12)"
+        tests:
+          - not_null
+      - name: monthly_total_flights
+        description: "Total flights in this month for this airline"
+      - name: monthly_delay_rate
+        description: "Delay rate percentage for this month"
+
+  - name: mart_airline_most_cancelled
+    description: "Ranking of airlines by total number of cancelled flights"
+    columns:
+      - name: airline
+        description: "Airline name"
+        tests:
+          - unique
+          - not_null
+      - name: cancelled_amount
+        description: "Total number of cancelled flights"
+        tests:
+          - not_null
+
+  - name: mart_busiest_times
+    description: "Flight volume and delay patterns by day of week and time of day"
+    columns:
+      - name: day_of_week
+        description: "Day of week (1=Monday, 7=Sunday)"
+        tests:
+          - not_null
+          - accepted_values:
+              values: [1, 2, 3, 4, 5, 6, 7]
+      - name: deptime_label
+        description: "Time-of-day block (Morning, Afternoon, Evening, Night)"
+        tests:
+          - not_null
+      - name: total_flights
+        description: "Total flights in this time slot"
+      - name: delayed_flights
+        description: "Number of delayed flights in this time slot"
+      - name: delay_rate_percentage
+        description: "Delay rate percentage for this time slot"

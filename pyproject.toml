@@ -14,6 +14,7 @@ dependencies = [
     "ruff>=0.15.12",
     "sqlfluff>=4.1.0",
     "statsd>=4.0.1",
+    "apache-airflow-providers-apache-spark==4.8.0",
 ]
 
 [dependency-groups]

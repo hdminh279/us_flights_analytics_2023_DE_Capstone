@@ -2,7 +2,7 @@
 
 ## 📝 Problem Statement
 
-Flight delays and cancellations are persistent issues in the aviation industry, costing billions of dollars annually. This project demonstrates a **production-grade data engineering solution** for processing and analyzing large-scale flight operations data (6 million+ rows from 2023).
+Flight delays cost US airlines approximately $33 billion annually. This project builds a scalable data platform that processes 6M+ flight records to provide Operations teams with actionable insights: which routes have the worst reliability, how weather conditions impact delay patterns, and which airlines improve or decline over time. The pipeline runs daily, incrementally processes new data, and serves 4 analytical dashboards enabling data-driven scheduling decisions.
 
 **The Challenge:**
 Build a scalable, automated batch pipeline that ingests raw data from external sources, processes it reliably at scale, transforms it into analytical-ready format, and makes it accessible through a data warehouse - all while maintaining data quality and reproducibility.

@@ -1,5 +1,7 @@
 {{ config(
-    materialized='table',
+    materialized='incremental',
+    incremental_strategy='append',
+    on_schema_change='append_new_columns',
     format='parquet',
     write_compression='snappy',
     partitioned_by=['flight_year', 'flight_month'] 
@@ -50,3 +52,8 @@ SELECT
     EXTRACT(MONTH FROM flight_date) AS flight_month
 
 FROM joined_data
+
+{% if is_incremental() %}
+WHERE flight_date > (SELECT MAX(flight_date) FROM {{ this }})
+{% endif %}
+

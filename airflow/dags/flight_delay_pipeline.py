@@ -1,5 +1,7 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
+from airflow.operators.python import ShortCircuitOperator
+from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from datetime import datetime, timedelta
 
 with DAG(
@@ -16,9 +18,10 @@ with DAG(
     },
 
     description="End-to-End Pipeline: Kaggle -> S3(Raw) -> Spark -> S3(Clean) -> dbt/Athena -> S3(Bussiness)",
-    schedule_interval='@once',
+    schedule_interval='0 7 * * *',
     start_date=datetime(2026, 3, 21),
     catchup=False,
+    max_active_runs=1,
     tags=["kaggle", "spark", "dbt", "athena"],
 ) as dag:
     
@@ -52,14 +55,16 @@ with DAG(
     ========= STAGE 2: SPARK PREPROCESSING =========
     """
 
-    spark_clean_data = BashOperator(
+    spark_clean_data = SparkSubmitOperator(
         task_id = "spark_preprocessing_job",
-        bash_command = """spark-submit \
-        --master spark://spark-master:7077 \
-        --executor-memory 3g \
-        --packages org.apache.hadoop:hadoop-aws:3.3.2,com.amazonaws:aws-java-sdk-bundle:1.12.115 \
-        /opt/airflow/dags/spark_jobs/spark_preprocessing.py
-        """
+        application="/opt/airflow/dags/spark_jobs/spark_preprocessing.py",
+        conf={
+            "spark.master": "spark://spark-master:7077",
+            "spark.executor.memory": "3g"
+        },
+        packages="org.apache.hadoop:hadoop-aws:3.2.2,com.amazonaws:aws-java-sdk-bundle:1.12.115",
+        name="airflow-spark-preprocessing",
+        verbose=True
     )
 
 

@@ -1,0 +1,235 @@
+version: 2
+
+sources:
+  - name: aws_data_lake
+    database: awsdatacatalog
+    schema: us_flight_database
+    tables:
+      - name: clean_geo
+        columns:
+          - name: iata_code
+            datatype: string
+            description: airport code
+            tests:
+              - unique
+              - not_null
+
+          - name: airport
+            datatype: string
+            description: name of the airport
+            tests:
+              - unique
+             
+          - name: city
+            datatype: string
+            description: city
+            tests:
+              - unique
+
+          - name: state
+            datatype: string
+            description: name of state of country
+            tests:
+              - unique
+              
+          - name: country
+            datatype: string
+            description: name of the country
+            tests:
+              - unique
+              - accepted_values:
+                  arguments: 
+                    values: ['USA']
+
+          - name: latitude
+            datatype: float
+
+          - name: longitude
+            datatype: float
+
+      - name: clean_weather
+        columns:
+          - name: airport_id
+            datatype: string
+            description: airport code
+            tests:
+              - unique
+              - not_null
+
+          - name: time
+            datatype: TIMESTAMP
+            description: date
+            tests:
+              - not_null
+
+          - name: tavg
+            datatype: float
+            description: average temperature
+
+          - name: prcp
+            datatype: float
+            description: Total Precipitation (mm)
+
+          - name: snow
+            datatype: float
+            description: snow depth
+
+          - name: wspd
+            datatype: float
+            description: Average Wind Speed (km/h)
+
+          - name: pres
+            datatype: float
+            description: Sea-Level Air Pressure (hPa)
+
+      - name: stg_flights
+        columns:
+          - name: flight_date
+            data_type: timestamp
+            description: "Flight departure date"
+            tests:
+              - not_null
+          - name: day_of_week
+            data_type: int
+            description: "Day of the week (1-7)"
+          - name: airline
+            data_type: string
+            description: "Airline name"
+            tests:
+              - not_null
+          - name: tail_number
+            data_type: string
+            description: "Aircraft tail number"
+            tests:
+              - not_null
+          - name: dep_airport
+            data_type: string
+            description: "Departure airport IATA code"
+            tests:
+              - not_null
+          - name: dep_cityname
+            data_type: string
+            description: "Departure city"
+          - name: deptime_label
+            data_type: string
+            description: "Departure time block"
+          - name: departure_delay_minutes
+            data_type: float
+            description: "Departure delay in minutes"
+          - name: dep_delay_tag
+            data_type: string
+            description: "Departure delay status tag"
+          - name: dep_delay_type
+            data_type: string
+            description: "Departure delay category"
+          - name: arr_airport
+            data_type: string
+            description: "Arrival airport IATA code"
+            tests:
+              - not_null
+          - name: arr_cityname
+            data_type: string
+            description: "Arrival city"
+          - name: arr_delay
+            data_type: float
+            description: "Arrival delay in minutes"
+          - name: arr_delay_type
+            data_type: string
+            description: "Arrival delay category"
+          - name: flight_duration
+            data_type: float
+            description: "Total flight duration in minutes"
+          - name: distance_type
+            data_type: string
+            description: "Flight distance category"
+          - name: delay_carrier
+            data_type: float
+            description: "Carrier delay (minutes)"
+          - name: delay_weather
+            data_type: float
+            description: "Weather delay (minutes)"
+          - name: delay_nas
+            data_type: float
+            description: "NAS delay (minutes)"
+          - name: delay_security
+            data_type: float
+            description: "Security delay (minutes)"
+          - name: delay_lastaircraft
+            data_type: float
+            description: "Late aircraft delay (minutes)"
+          - name: manufacturer
+            data_type: string
+            description: "Aircraft manufacturer"
+          - name: model
+            data_type: string
+            description: "Aircraft model"
+          - name: aircraft_age
+            data_type: int
+            description: "Aircraft age in years"
+
+      - name: stg_cancelled_diverted
+        description: "Cleaned data of cancelled or diverted flights"
+        columns:
+          - name: flight_date
+            data_type: timestamp
+            description: "Flight departure date"
+            tests:
+              - not_null
+          - name: day_of_week
+            data_type: int
+            description: "Day of the week (1-7)"
+          - name: airline
+            data_type: string
+            description: "Airline name"
+            tests:
+              - not_null
+          - name: tail_number
+            data_type: string
+            description: "Aircraft tail number"
+            tests:
+              - not_null
+          - name: cancelled
+            data_type: int
+            description: "Cancelled indicator (1=Yes, 0=No)"
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [0, 1]
+          - name: diverted
+            data_type: int
+            description: "Diverted indicator (1=Yes, 0=No)"
+            tests:
+              - not_null
+              - accepted_values:
+                  values: [0, 1]
+          - name: dep_airport
+            data_type: string
+            description: "Departure airport IATA code"
+            tests:
+              - not_null
+          - name: dep_cityname
+            data_type: string
+            description: "Departure city"
+          - name: deptime_label
+            data_type: string
+            description: "Departure time block"
+          - name: dep_delay_tag
+            data_type: string
+            description: "Departure delay status tag"
+          - name: dep_delay_type
+            data_type: string
+            description: "Departure delay category"
+          - name: arr_airport
+            data_type: string
+            description: "Arrival airport IATA code"
+            tests:
+              - not_null
+          - name: arr_cityname
+            data_type: string
+            description: "Arrival city"
+          - name: arr_delay_type
+            data_type: string
+            description: "Arrival delay category"
+          - name: distance_type
+            data_type: string
+            description: "Flight distance category"
