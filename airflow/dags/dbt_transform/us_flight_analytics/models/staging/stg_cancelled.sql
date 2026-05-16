@@ -3,12 +3,11 @@ WITH raw_cancelled AS (
 )
 
 SELECT
-    CAST(flightdate AS DATE) AS flight_date,
     day_of_week,
     airline,
     tail_number,
-
     cancelled,
+
     diverted,
     dep_airport,
     dep_cityname,
@@ -18,10 +17,10 @@ SELECT
     arr_airport,
     arr_cityname,
     arr_delay_type,
-    distance_type
+    distance_type,
+    CAST(flightdate AS DATE) AS flight_date
 FROM raw_cancelled
 WHERE
     flightdate IS NOT NULL
     AND
     tail_number IS NOT NULL
-

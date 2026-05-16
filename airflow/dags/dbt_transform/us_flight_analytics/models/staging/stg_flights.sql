@@ -3,7 +3,6 @@ WITH raw_flights AS (
 )
 
 SELECT
-    CAST(flightdate AS DATE) AS flight_date,
     day_of_week,
     airline,
     tail_number,
@@ -26,7 +25,8 @@ SELECT
     delay_lastaircraft,
     manufacturer,
     model,
-    aircraft_age 
+    aircraft_age,
+    CAST(flightdate AS DATE) AS flight_date
 FROM raw_flights
 WHERE
     flightdate IS NOT NULL

@@ -4,12 +4,12 @@ WITH raw_weather AS (
 
 SELECT
     airport_id AS airport_code,
-    CAST(time AS DATE) as time,
     tavg AS avg_temp_c,
     prcp AS precipitation_mm,
     snow AS snow_mm,
     wspd AS wind_speed_kmh,
-    pres AS sea_level_pressure
+    pres AS sea_level_pressure,
+    CAST(time AS DATE) AS time
 FROM raw_weather
 WHERE
     airport_id IS NOT NULL
