@@ -120,7 +120,7 @@ if __name__ == "__main__":
 
         df_airport_geo_clean = clean_airport_geo(df_airport_geo)
         df_airport_geo_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/geo",mode="overwrite")
-        logger.info(f"airport_geo complete")
+        logger.info("airport_geo complete")
 
         # FLIGHTS
         flights_schema = types.StructType([
@@ -166,7 +166,7 @@ if __name__ == "__main__":
         df_flights_final_clean = df_flights_clean.unionByName(df_flights_24_clean)
 
         df_flights_final_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/flights", mode="overwrite")
-        logger.info(f"Flights complete")
+        logger.info("Flights complete")
 
         # CANCELLED & DIVERTED
         can_div_schema = types.StructType([
@@ -203,7 +203,7 @@ if __name__ == "__main__":
         df_can_div_clean = can_div_clean(df_can_div)
 
         df_can_div_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/cancelled_diverted", mode="overwrite")
-        logger.info(f"Cancelled & Diverted complete")
+        logger.info("Cancelled & Diverted complete")
 
         # WEATHER
         weather_schema = types.StructType([
@@ -227,7 +227,7 @@ if __name__ == "__main__":
         df_weather_clean = weather_clean(df_weather)
 
         df_weather_clean.write.parquet(f"s3a://{S3_BUCKET}/clean/weather", mode="overwrite")
-        logger.info(f"Weather complete")
+        logger.info("Weather complete")
 
         logger.info("Spark complete")
     except Exception as e:
