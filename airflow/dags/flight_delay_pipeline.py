@@ -1,8 +1,9 @@
 from airflow import DAG
 from airflow.operators.bash import BashOperator
-from airflow.providers.apache.spark.operators.spark_submit import SparkSubmitOperator
 from datetime import datetime, timedelta
 import os
+
+EMAIL = os.getenv("ALERT_EMAIL")
 
 with DAG(
     dag_id="flight_delay_pipeline",
@@ -14,17 +15,15 @@ with DAG(
         "retry_delay": timedelta(minutes=1),
         "email_on_failure": True,
         "email_on_retry": False,
-        "email": [os.environ.get('ALERT_EMAIL', 'your_email@example.com')]
+        "email": [EMAIl]
     },
 
     description="End-to-End Pipeline: Kaggle -> S3(Raw) -> Spark -> S3(Clean) -> dbt/Athena -> S3(Bussiness)",
-    schedule_interval='0 7 * * *',
+    schedule_interval='@once',
     start_date=datetime(2026, 3, 21),
     catchup=False,
-    max_active_runs=1,
     tags=["kaggle", "spark", "dbt", "athena"],
 ) as dag:
-    
     """
     ========= STAGE 1: INGEST =========
     """
@@ -55,17 +54,14 @@ with DAG(
     ========= STAGE 2: SPARK PREPROCESSING =========
     """
 
-    spark_clean_data = SparkSubmitOperator(
+    spark_clean_data = BashOperator(
         task_id = "spark_preprocessing_job",
-        application="/opt/airflow/dags/spark_jobs/spark_preprocessing.py",
-        conf={
-            "spark.executor.memory": "3g"
-        },
-        packages="org.apache.hadoop:hadoop-aws:3.2.2,com.amazonaws:aws-java-sdk-bundle:1.12.115",
-        name="airflow-spark-preprocessing",
-        verbose=True
+        bash_command = """spark-submit \
+        --master spark://spark-master:7077 \
+        --packages org.apache.hadoop:hadoop-aws:3.3.2,com.amazonaws:aws-java-sdk-bundle:1.12.115 \
+        /opt/airflow/dags/spark_jobs/spark_preprocessing.py
+        """
     )
-
 
     """
     ========= STAGE 3: dbt/Athena Transform =========
