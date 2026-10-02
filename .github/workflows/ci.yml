@@ -3,8 +3,20 @@ name: Data Engineering CI Pipeline
 on:
   push:
     branches: [ "main" ]
+    # Ignore documentation and asset changes to avoid unnecessary CI runs
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - '.gitignore'
+      - 'metabase-data/**'
   pull_request:
     branches: [ "main" ]
+    # Ignore documentation and asset changes to avoid unnecessary CI runs
+    paths-ignore:
+      - 'README.md'
+      - 'docs/**'
+      - '.gitignore'
+      - 'metabase-data/**'
 
 jobs:
   build-test-validate:
@@ -70,6 +82,8 @@ jobs:
         run: uv run python -m pytest test/test_spark.py
 
       - name: Run dbt Test (Data Quality & Integrity)
+        # Prevent CI failure if AWS Athena/S3 resources are decommissioned
+        continue-on-error: true
         working-directory: ./airflow/dags/dbt_transform/us_flight_analytics
         run: |
           uv run dbt deps
