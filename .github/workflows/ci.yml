@@ -81,10 +81,10 @@ jobs:
       - name: Run PySpark Unit Test
         run: uv run python -m pytest test/test_spark.py
 
-      - name: Run dbt Test (Data Quality & Integrity)
-        # Prevent CI failure if AWS Athena/S3 resources are decommissioned
-        continue-on-error: true
-        working-directory: ./airflow/dags/dbt_transform/us_flight_analytics
-        run: |
-          uv run dbt deps
-          uv run dbt test
+      # - name: Run dbt Test (Data Quality & Integrity)
+      #   # Disabled: Requires active AWS Athena and S3 bucket with live data.
+      #   # Uncomment when live AWS infrastructure is provisioned:
+      #   # working-directory: ./airflow/dags/dbt_transform/us_flight_analytics
+      #   # run: |
+      #   #   uv run dbt deps
+      #   #   uv run dbt test
