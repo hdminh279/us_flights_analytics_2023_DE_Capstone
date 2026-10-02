@@ -1,0 +1,129 @@
+%% start of file `cv_hoducminh.tex'.
+\documentclass[11pt,a4paper,sans]{moderncv}
+
+\moderncvstyle{banking}
+\moderncvcolor{blue}
+
+% Tinh chinh le can doi trang A4
+\usepackage[left=0.70in,right=0.70in,top=0.60in,bottom=0.60in]{geometry}
+\usepackage{enumitem}
+\usepackage{url}
+\usepackage{hyperref}
+
+% Dong bo font chu cua Link voi font Sans-serif cua CV (khong bi loi font may danh chu hay bi loi ky tu _)
+\urlstyle{same}
+
+\name{Ho}{Duc Minh}
+\address{Hanoi, Vietnam}{}{}
+\phone[mobile]{0981812751}
+\email{hoducminh09@gmail.com}
+\homepage{github.com/hdminh279}
+
+\begin{document}
+\makecvtitle
+\vspace{-16pt}
+
+% =========================================================
+% SUMMARY
+% =========================================================
+
+\section{SUMMARY}
+
+Fourth-year Artificial Intelligence and Data Science student focused on Data Engineering.
+Experienced in building batch and streaming data pipelines with Python, SQL, Spark, Flink,
+Airflow, dbt, Docker, and AWS. Seeking a Data Engineer Intern position.
+
+\vspace{0.15cm}
+
+% =========================================================
+% EDUCATION
+% =========================================================
+
+\section{EDUCATION}
+
+\noindent
+\begin{tabular*}{\maincolumnwidth}{l@{\extracolsep{\fill}}r}
+  \textbf{Thuyloi University (TLA)} & \textit{2023 -- 2027} \\
+  \textit{B.Sc. in Artificial Intelligence and Data Science} & \textbf{GPA: 3.4 / 4.00} \\
+\end{tabular*}
+
+\vspace{0.15cm}
+
+% =========================================================
+% TECHNICAL SKILLS
+% =========================================================
+
+\section{TECHNICAL SKILLS}
+
+\begin{itemize}[leftmargin=0.15in,itemsep=2pt,topsep=1pt]
+\item \textbf{Languages:} Python, SQL, Linux Shell Scripting, Git
+\item \textbf{Big Data \& Processing:} Apache Spark, Apache Flink, Redpanda, DuckDB, Pandas
+\item \textbf{Data Modeling \& Orchestration:} Apache Airflow, dbt, Medallion Architecture, ETL/ELT Pipelines
+\item \textbf{Cloud, Storage \& DevOps:} AWS, PostgreSQL, Docker, Terraform, Metabase
+\end{itemize}
+
+\vspace{0.15cm}
+
+% =========================================================
+% PROJECTS
+% =========================================================
+
+\section{PERSONAL PROJECTS}
+
+% ---------------------------------------------------------
+% E-COMMERCE CLICKSTREAM
+% ---------------------------------------------------------
+
+\noindent
+\begin{tabular*}{\maincolumnwidth}{l@{\extracolsep{\fill}}r}
+\textbf{E-Commerce Clickstream Analytics -- Real-Time Data Pipeline}
+& \textit{Apr 2026 -- Jun 2026} \\
+\color{color1}\href{https://github.com/hdminh279/e_commerce_clickstream_de_project}{\nolinkurl{https://github.com/hdminh279/e_commerce_clickstream_de_project}} & \\
+\end{tabular*}
+
+\vspace{-4pt}
+
+\begin{itemize}[leftmargin=0.15in,itemsep=3pt,topsep=3pt]
+\item Built a real-time and batch pipeline to process e-commerce clickstream data for conversion and revenue analytics.
+\item Implemented fault-tolerant streaming with Flink, event-time watermarks, schema validation, and Dead Letter Queue for invalid events.
+\item Automated batch transformation with Airflow, dbt, and DuckDB, with data stored in AWS S3 and visualized in Metabase.
+\end{itemize}
+
+\vspace{0.30cm}
+
+% ---------------------------------------------------------
+% US FLIGHT
+% ---------------------------------------------------------
+
+\noindent
+\begin{tabular*}{\maincolumnwidth}{l@{\extracolsep{\fill}}r}
+\textbf{US Flight Delay Analytics -- End-to-End Batch Pipeline}
+& \textit{Mar 2026 -- Jun 2026} \\
+\color{color1}\href{https://github.com/hdminh279/us_flights_analytics_2023_DE_Capstone}{\nolinkurl{https://github.com/hdminh279/us_flights_analytics_2023_DE_Capstone}} & \\
+\end{tabular*}
+
+\vspace{-4pt}
+
+\begin{itemize}[leftmargin=0.15in,itemsep=3pt,topsep=3pt]
+\item Built an end-to-end batch pipeline to process 6M+ U.S. flight records for delay, cancellation, and airline performance analysis.
+\item Used Spark to clean and transform raw data into partitioned Parquet, with AWS S3, Glue, and Athena for scalable storage and analytics.
+\item Automated ingestion and transformation with Airflow and dbt, and built Metabase dashboards for business KPIs.
+\end{itemize}
+
+\vspace{0.15cm}
+
+% =========================================================
+% CERTIFICATION
+% =========================================================
+
+\section{CERTIFICATION}
+
+\noindent
+\begin{tabular*}{\maincolumnwidth}{l@{\extracolsep{\fill}}r}
+\textbf{Data Engineering Zoomcamp} -- \textit{DataTalks.Club}
+& \textit{April 2026} \\
+\color{color1}\href{https://certificate.datatalks.club/dezoomcamp/2026/ffc04dc067453c998b219c61cc10099cb59ed595.pdf}{Credential: FFC04D}
+& \\
+\end{tabular*}
+
+\end{document}
